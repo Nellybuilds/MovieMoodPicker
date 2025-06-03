@@ -85,6 +85,18 @@ export default function Home() {
     pickRandomMovie();
   };
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--dark-bg))] via-[hsl(var(--dark-secondary))] to-[hsl(var(--dark-bg))] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[hsl(var(--tubi-purple))] mx-auto mb-4"></div>
+          <p className="text-xl text-gray-300">Loading movies from TMDB...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--dark-bg))] via-[hsl(var(--dark-secondary))] to-[hsl(var(--dark-bg))]">
       {/* Header */}
@@ -99,6 +111,28 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 lg:px-8 pb-12">
+        {/* Error Display */}
+        {error && (
+          <div className="mb-8 p-4 bg-red-900/50 border border-red-700 rounded-lg text-center">
+            <p className="text-red-200 text-lg">{error}</p>
+            <Button 
+              onClick={() => window.location.reload()} 
+              className="mt-3 px-4 py-2 bg-red-700 hover:bg-red-600 text-white rounded"
+            >
+              Reload Page
+            </Button>
+          </div>
+        )}
+
+        {/* Movie Count Display */}
+        {!error && movies.length > 0 && (
+          <div className="mb-8 text-center">
+            <p className="text-gray-400 text-sm">
+              Loaded {movies.length} movies from TMDB
+            </p>
+          </div>
+        )}
+
         {/* Mood Selector */}
         <section className="mb-8 lg:mb-12 animate-fade-in">
           <h2 className="text-2xl lg:text-3xl font-semibold mb-6 text-center text-gray-200">

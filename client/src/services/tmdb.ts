@@ -1,4 +1,4 @@
-const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY || import.meta.env.TMDB_API_KEY;
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -122,51 +122,30 @@ function transformTMDBMovie(tmdbMovie: TMDBMovie): Movie {
 }
 
 export async function fetchMovies(): Promise<Movie[]> {
-  if (!TMDB_API_KEY) {
-    throw new Error('TMDB API key is not configured');
-  }
-
-  const movies: Movie[] = [];
-  
   try {
-    // Fetch popular movies from multiple pages to get variety
-    for (let page = 1; page <= 10; page++) {
-      const response = await fetch(
-        `${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&page=${page}&language=en-US`
-      );
-      
-      if (!response.ok) {
-        throw new Error(`TMDB API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      const transformedMovies = data.results.map(transformTMDBMovie);
-      movies.push(...transformedMovies);
+    const response = await fetch('/api/movies');
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
     }
-
-    // Also fetch some top-rated movies for quality content
-    for (let page = 1; page <= 5; page++) {
-      const response = await fetch(
-        `${TMDB_BASE_URL}/movie/top_rated?api_key=${TMDB_API_KEY}&page=${page}&language=en-US`
-      );
-      
-      if (!response.ok) {
-        throw new Error(`TMDB API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      const transformedMovies = data.results.map(transformTMDBMovie);
-      movies.push(...transformedMovies);
+    
+    const data = await response.json();
+    
+    if (data.error) {
+      throw new Error(data.error);
     }
-
+    
+    // Transform TMDB movies to our format
+    const transformedMovies = data.movies.map(transformTMDBMovie);
+    
     // Remove duplicates based on title
-    const uniqueMovies = movies.filter((movie, index, self) => 
+    const uniqueMovies = transformedMovies.filter((movie: Movie, index: number, self: Movie[]) => 
       index === self.findIndex(m => m.title === movie.title)
     );
 
     return uniqueMovies;
   } catch (error) {
-    console.error('Error fetching movies from TMDB:', error);
+    console.error('Error fetching movies:', error);
     throw error;
   }
 }
