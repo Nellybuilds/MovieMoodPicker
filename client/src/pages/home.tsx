@@ -1,19 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MoodSelector } from "@/components/mood-selector";
 import { GenreSelector } from "@/components/genre-selector";
 import { MovieCard } from "@/components/movie-card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { movies, type Movie } from "@/data/movies";
+import { fetchMovies, type Movie } from "@/services/tmdb";
 
 export default function Home() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [kidsOnly, setKidsOnly] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load movies from TMDB on component mount
+  useEffect(() => {
+    const loadMovies = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const tmdbMovies = await fetchMovies();
+        setMovies(tmdbMovies);
+      } catch (err) {
+        console.error('Failed to load movies:', err);
+        setError('Failed to load movies. Please check your internet connection and try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMovies();
+  }, []);
 
   const pickRandomMovie = () => {
+    if (movies.length === 0) {
+      setError('No movies available. Please try again later.');
+      return;
+    }
+
     let filteredMovies = movies;
 
     // Filter by mood if selected
@@ -36,13 +63,14 @@ export default function Home() {
     }
 
     if (filteredMovies.length === 0) {
-      alert('No movies found matching your criteria. Try different selections!');
+      setError('No movies found matching your criteria. Try different selections!');
       return;
     }
 
     // Pick random movie from filtered results
     const randomMovie = filteredMovies[Math.floor(Math.random() * filteredMovies.length)];
     setSelectedMovie(randomMovie);
+    setError(null);
 
     // Scroll to movie result
     setTimeout(() => {
