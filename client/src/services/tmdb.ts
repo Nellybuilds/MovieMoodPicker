@@ -103,11 +103,20 @@ function getGenreFromIds(genreIds: number[]): string {
 function transformTMDBMovie(tmdbMovie: TMDBMovie): Movie {
   const genre = getGenreFromIds(tmdbMovie.genre_ids);
   const mood = assignMood(tmdbMovie);
-  const isKidFriendly = !tmdbMovie.adult && (
-    tmdbMovie.genre_ids.includes(10751) || // Family
-    tmdbMovie.genre_ids.includes(16) || // Animation
-    tmdbMovie.genre_ids.includes(35) // Comedy (some comedies are kid-friendly)
-  );
+  
+  // More strict kid-friendly classification
+  const isKidFriendly = !tmdbMovie.adult && 
+    tmdbMovie.vote_average >= 6.0 && // Must have decent rating
+    (
+      tmdbMovie.genre_ids.includes(10751) || // Family
+      tmdbMovie.genre_ids.includes(16) // Animation only
+    ) &&
+    // Exclude genres that are typically not kid-friendly
+    !tmdbMovie.genre_ids.includes(27) && // Horror
+    !tmdbMovie.genre_ids.includes(53) && // Thriller
+    !tmdbMovie.genre_ids.includes(80) && // Crime
+    !tmdbMovie.genre_ids.includes(10752) && // War
+    !tmdbMovie.genre_ids.includes(9648); // Mystery
 
   return {
     title: tmdbMovie.title,
