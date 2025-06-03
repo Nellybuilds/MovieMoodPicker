@@ -61,7 +61,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--dark-bg))] via-[hsl(var(--dark-secondary))] to-[hsl(var(--dark-bg))]">
       {/* Header */}
       <header className="text-center py-8 lg:py-12">
-        <h1 className="text-4xl lg:text-6xl font-bold mb-2 animate-glow text-white">
+        <h1 className="text-4xl lg:text-6xl font-bold mb-2 text-white">
           What Should I Watch?
         </h1>
         <p className="text-lg lg:text-xl text-gray-300 animate-float">
@@ -121,7 +121,8 @@ export default function Home() {
         >
           <Button 
             onClick={pickRandomMovie}
-            className="px-12 py-6 lg:px-16 lg:py-8 bg-gradient-to-r from-[hsl(var(--tubi-purple))] to-[hsl(var(--tubi-blue))] hover:from-[hsl(var(--tubi-blue))] hover:to-[hsl(var(--tubi-purple))] text-white text-xl lg:text-2xl font-bold rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-[hsl(var(--tubi-purple))]/40 hover:scale-105 transform border-0"
+            className="px-12 py-6 lg:px-16 lg:py-8 bg-gradient-to-r from-[hsl(var(--tubi-purple))] to-[hsl(var(--tubi-blue))] hover:from-[hsl(var(--tubi-blue))] hover:to-[hsl(var(--tubi-purple))] text-white text-xl lg:text-2xl font-bold rounded-2xl transition-all duration-300 hover:scale-105 transform border-0 shadow-lg"
+            style={{ color: 'white !important' }}
           >
             🎬 Pick Something
           </Button>
