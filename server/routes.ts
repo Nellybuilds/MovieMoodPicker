@@ -16,7 +16,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     10752: 'Action', 37: 'Action'
   };
 
-  function getGenreFromTMDB(genreIds: number[]): string {
+  function getGenreFromTMDB(genreIds: number[] | undefined): string {
+    if (!genreIds || !Array.isArray(genreIds)) return 'Drama';
     for (const id of genreIds) {
       if (GENRE_MAP[id]) return GENRE_MAP[id];
     }
@@ -24,8 +25,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   function assignMoodFromTMDB(movie: any): string {
-    const genreIds = movie.genre_ids;
-    const rating = movie.vote_average;
+    const genreIds = movie.genre_ids || [];
+    const rating = movie.vote_average || 6;
+
+    if (!Array.isArray(genreIds)) return 'Chill';
 
     if (genreIds.includes(27) || genreIds.includes(53)) return 'Scared';
     if (genreIds.includes(35)) return 'Happy';
@@ -41,12 +44,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   function isMovieKidFriendly(movie: any): boolean {
+    const genreIds = movie.genre_ids || [];
+    if (!Array.isArray(genreIds)) return false;
+    
     return !movie.adult && 
-           movie.vote_average >= 6.0 && 
-           (movie.genre_ids.includes(10751) || movie.genre_ids.includes(16)) &&
-           !movie.genre_ids.includes(27) && !movie.genre_ids.includes(53) &&
-           !movie.genre_ids.includes(80) && !movie.genre_ids.includes(10752) &&
-           !movie.genre_ids.includes(9648);
+           (movie.vote_average || 0) >= 6.0 && 
+           (genreIds.includes(10751) || genreIds.includes(16)) &&
+           !genreIds.includes(27) && !genreIds.includes(53) &&
+           !genreIds.includes(80) && !genreIds.includes(10752) &&
+           !genreIds.includes(9648);
   }
 
   // TMDB API proxy endpoint
