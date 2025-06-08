@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { fetchMovies, type Movie } from "@/services/tmdb";
+import { getAIMovieRecommendation, type AIRecommendation } from "@/services/openrouter";
 
 export default function Home() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
@@ -15,6 +16,8 @@ export default function Home() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [aiInsight, setAiInsight] = useState<AIRecommendation | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
   // Load movies from TMDB on component mount
   useEffect(() => {
@@ -83,6 +86,43 @@ export default function Home() {
 
   const pickAnotherMovie = () => {
     pickRandomMovie();
+  };
+
+  const getAIRecommendation = async () => {
+    if (movies.length === 0) {
+      setError('No movies available. Please try again later.');
+      return;
+    }
+
+    try {
+      setIsAiLoading(true);
+      setError(null);
+      
+      const result = await getAIMovieRecommendation(movies, {
+        mood: selectedMood || '',
+        genre: selectedGenre || '',
+        kidsOnly,
+        previouslyWatched: [],
+        userPreferences: ''
+      });
+
+      setSelectedMovie(result.movie);
+      setAiInsight(result.aiInsight);
+
+      // Scroll to movie result
+      setTimeout(() => {
+        const movieResult = document.getElementById('movieResult');
+        if (movieResult) {
+          movieResult.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+
+    } catch (err) {
+      console.error('AI recommendation failed:', err);
+      setError('AI recommendation temporarily unavailable. Try the regular picker.');
+    } finally {
+      setIsAiLoading(false);
+    }
   };
 
   // Show loading state
@@ -176,18 +216,42 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Action Button */}
+        {/* Action Buttons */}
         <section 
           className="text-center mb-12 animate-fade-in" 
           style={{ animationDelay: '0.6s' }}
         >
-          <Button 
-            onClick={pickRandomMovie}
-            className="px-12 py-6 lg:px-16 lg:py-8 bg-gradient-to-r from-[hsl(var(--tubi-purple))] to-[hsl(var(--tubi-blue))] hover:from-[hsl(var(--tubi-blue))] hover:to-[hsl(var(--tubi-purple))] text-white text-xl lg:text-2xl font-bold rounded-2xl transition-all duration-300 hover:scale-105 transform border-0 shadow-lg"
-            style={{ color: 'white !important' }}
-          >
-            🎬 Pick Something
-          </Button>
+          <div className="flex flex-col lg:flex-row gap-4 justify-center items-center">
+            <Button 
+              onClick={pickRandomMovie}
+              disabled={isAiLoading}
+              className="px-12 py-6 lg:px-16 lg:py-8 bg-gradient-to-r from-[hsl(var(--tubi-purple))] to-[hsl(var(--tubi-blue))] hover:from-[hsl(var(--tubi-blue))] hover:to-[hsl(var(--tubi-purple))] text-white text-xl lg:text-2xl font-bold rounded-2xl transition-all duration-300 hover:scale-105 transform border-0 shadow-lg disabled:opacity-50"
+              style={{ color: 'white !important' }}
+            >
+              🎬 Pick Something
+            </Button>
+            
+            <div className="text-gray-400 text-lg font-medium">or</div>
+            
+            <Button 
+              onClick={getAIRecommendation}
+              disabled={isAiLoading || isLoading}
+              className="px-12 py-6 lg:px-16 lg:py-8 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-teal-600 hover:to-emerald-600 text-white text-xl lg:text-2xl font-bold rounded-2xl transition-all duration-300 hover:scale-105 transform border-0 shadow-lg disabled:opacity-50"
+            >
+              {isAiLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                  AI Thinking...
+                </>
+              ) : (
+                <>🤖 AI Pick</>
+              )}
+            </Button>
+          </div>
+          
+          <p className="text-gray-400 text-sm mt-4">
+            AI Pick uses OpenRouter to analyze your preferences and find the perfect movie
+          </p>
         </section>
 
         {/* Movie Result */}
