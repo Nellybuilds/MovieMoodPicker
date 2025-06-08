@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Movie } from "@/data/movies";
+import type { Movie } from "@/services/tmdb";
+import type { AIRecommendation } from "@/services/openrouter";
 
 interface MovieCardProps {
   movie: Movie;
   onPickAnother: () => void;
+  aiInsight?: AIRecommendation | null;
 }
 
-export function MovieCard({ movie, onPickAnother }: MovieCardProps) {
+export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
   return (
     <div className="max-w-4xl mx-auto">
       <Card className="bg-[hsl(var(--dark-secondary))] rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
@@ -53,6 +55,20 @@ export function MovieCard({ movie, onPickAnother }: MovieCardProps) {
               <p className="text-gray-300 text-base lg:text-lg leading-relaxed mb-6">
                 {movie.description}
               </p>
+
+              {/* AI Insights */}
+              {aiInsight && (
+                <div className="mb-6 p-4 bg-emerald-900/30 border border-emerald-700/50 rounded-lg">
+                  <div className="flex items-center mb-2">
+                    <span className="text-emerald-400 text-sm font-medium mr-2">🤖 AI Recommendation</span>
+                    <Badge className="px-2 py-1 bg-emerald-600 text-white text-xs">
+                      {Math.round(aiInsight.confidence * 100)}% match
+                    </Badge>
+                  </div>
+                  <p className="text-emerald-100 text-sm mb-2">{aiInsight.reasoning}</p>
+                  <p className="text-emerald-200 text-xs">{aiInsight.watchContext}</p>
+                </div>
+              )}
               
               {/* Pick Another Button */}
               <Button 

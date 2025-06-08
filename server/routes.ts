@@ -230,7 +230,7 @@ Choose the movie that best matches the user's mood and preferences. Be specific 
       const movieStats = {
         total: movies.length,
         averageRating: movies.reduce((sum: number, movie: any) => sum + movie.vote_average, 0) / movies.length,
-        genres: [...new Set(movies.flatMap((movie: any) => movie.genre_ids))].slice(0, 10),
+        genres: Array.from(new Set(movies.flatMap((movie: any) => movie.genre_ids))).slice(0, 10),
         topRated: movies.filter((movie: any) => movie.vote_average >= 8).length
       };
 

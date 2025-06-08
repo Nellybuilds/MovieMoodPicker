@@ -259,7 +259,8 @@ export default function Home() {
           <section id="movieResult" className="animate-slide-up">
             <MovieCard 
               movie={selectedMovie} 
-              onPickAnother={pickAnotherMovie} 
+              onPickAnother={pickAnotherMovie}
+              aiInsight={aiInsight}
             />
           </section>
         )}
