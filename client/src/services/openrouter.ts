@@ -18,13 +18,23 @@ export async function getAIMovieRecommendation(
   request: MovieRecommendationRequest
 ): Promise<{ movie: any; aiInsight: AIRecommendation }> {
   try {
+    // Send only essential movie data to reduce payload size
+    const essentialMovies = movies.map(movie => ({
+      title: movie.title,
+      overview: movie.overview || movie.description,
+      vote_average: movie.vote_average,
+      genre_ids: movie.genre_ids,
+      adult: movie.adult,
+      release_date: movie.release_date
+    }));
+
     const response = await fetch('/api/ai-recommend', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        movies,
+        movies: essentialMovies,
         ...request
       })
     });

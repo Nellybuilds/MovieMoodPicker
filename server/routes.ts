@@ -121,14 +121,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: 'No movies match your criteria' });
       }
 
-      // Prepare AI prompt
-      const movieSummaries = filteredMovies.slice(0, 20).map((movie: any) => ({
-        title: movie.title,
-        overview: movie.overview,
-        vote_average: movie.vote_average,
-        release_date: movie.release_date,
-        genre_ids: movie.genre_ids
-      }));
+      // Prepare AI prompt with top-rated movies from filtered results
+      const topMovies = filteredMovies
+        .sort((a: any, b: any) => b.vote_average - a.vote_average)
+        .slice(0, 10)
+        .map((movie: any) => ({
+          title: movie.title,
+          overview: movie.overview ? movie.overview.substring(0, 200) : 'No description available',
+          rating: movie.vote_average,
+          year: movie.release_date ? movie.release_date.split('-')[0] : 'Unknown'
+        }));
 
       const prompt = `You are a movie recommendation AI. Based on the user's preferences, recommend the BEST movie from this list.
 
@@ -139,8 +141,8 @@ User Preferences:
 - Previously Watched: ${previouslyWatched.join(', ') || 'None specified'}
 - Additional Preferences: ${userPreferences || 'None'}
 
-Available Movies (JSON):
-${JSON.stringify(movieSummaries, null, 2)}
+Available Movies:
+${topMovies.map((movie: any) => `- ${movie.title} (${movie.year}) - Rating: ${movie.rating}/10\n  ${movie.overview}`).join('\n\n')}
 
 Please respond with valid JSON in this exact format:
 {
@@ -196,11 +198,12 @@ Choose the movie that best matches the user's mood and preferences. Be specific 
         };
       }
 
-      // Find the recommended movie in our list
+      // Find the recommended movie in our original list
       const recommendedMovie = filteredMovies.find((movie: any) => 
         movie.title.toLowerCase().includes(aiRecommendation.recommendedMovie.toLowerCase()) ||
         aiRecommendation.recommendedMovie.toLowerCase().includes(movie.title.toLowerCase())
-      ) || filteredMovies[Math.floor(Math.random() * filteredMovies.length)];
+      ) || topMovies.find((movie: any) => movie.title === aiRecommendation.recommendedMovie) || 
+      filteredMovies[Math.floor(Math.random() * filteredMovies.length)];
 
       res.json({
         movie: recommendedMovie,
