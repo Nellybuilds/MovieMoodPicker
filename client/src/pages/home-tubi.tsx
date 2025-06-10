@@ -137,7 +137,7 @@ export default function Home() {
                 <Checkbox 
                   id="kids-only" 
                   checked={kidsOnly}
-                  onCheckedChange={(checked) => setKidsOnly(checked === true)}
+                  onCheckedChange={setKidsOnly}
                 />
                 <Label htmlFor="kids-only" className="text-lg">
                   Kids & Family Only
