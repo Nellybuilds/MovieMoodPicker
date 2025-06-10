@@ -146,7 +146,7 @@ export default function Home() {
               className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold px-8 py-4 text-lg min-w-[200px] shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Shuffle className="mr-2 h-5 w-5" />
-              Random Pick
+              Surprise Me
             </Button>
             
             <Button
@@ -156,7 +156,7 @@ export default function Home() {
               className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold px-8 py-4 text-lg min-w-[200px] shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Sparkles className="mr-2 h-5 w-5" />
-              {isAiLoading ? 'AI Thinking...' : 'AI Pick'}
+              {isAiLoading ? 'Finding Perfect Match...' : 'Smart Pick'}
             </Button>
             
             <Button
