@@ -256,6 +256,218 @@ export const tubiMovies: TubiMovie[] = [
     description: "A girl navigates the complex social hierarchy of her new high school and learns valuable lessons about friendship.",
     year: 2004,
     rating: 7.0
+  },
+
+  // Additional Action Movies
+  {
+    title: "The Matrix",
+    genre: "Action",
+    mood: "Adventurous",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    description: "A computer programmer discovers that reality as he knows it might not be real.",
+    year: 1999,
+    rating: 8.7
+  },
+  {
+    title: "300",
+    genre: "Action",
+    mood: "Adventurous",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/bBrjlGg6ybAN6jPALdCKBLxnMNZ.jpg",
+    description: "King Leonidas leads 300 Spartans against the Persian army at the Battle of Thermopylae.",
+    year: 2006,
+    rating: 7.6
+  },
+  {
+    title: "Snakes on a Plane",
+    genre: "Action",
+    mood: "Adventurous",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/9CoZQXJoiK8sUGVt5eXKDjxVhZI.jpg",
+    description: "An FBI agent takes on a plane full of deadly venomous snakes.",
+    year: 2006,
+    rating: 5.4
+  },
+
+  // Additional Horror Movies
+  {
+    title: "The Strangers",
+    genre: "Horror",
+    mood: "Scared",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/gJF63jFz6w5qqgZoJo5thqhGw9I.jpg",
+    description: "A young couple staying in an isolated vacation home are terrorized by three unknown assailants.",
+    year: 2008,
+    rating: 6.1
+  },
+  {
+    title: "Final Destination",
+    genre: "Horror",
+    mood: "Scared",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/tLwNNdKKhcgLVDI4K24ZhRd9V5R.jpg",
+    description: "After a teenager has a terrifying vision of a plane crash, Death stalks the survivors.",
+    year: 2000,
+    rating: 6.7
+  },
+  {
+    title: "28 Days Later",
+    genre: "Horror",
+    mood: "Scared",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/yrtbIGBBF5nrMGkUoNDUJP3vr3J.jpg",
+    description: "Four weeks after a virus turns people into zombies, a man wakes up from a coma to find London deserted.",
+    year: 2002,
+    rating: 7.6
+  },
+
+  // Additional Comedy Movies
+  {
+    title: "The Hangover",
+    genre: "Comedy",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/uluNMXESqFKIzl4c4dSkArwczrj.jpg",
+    description: "Three buddies wake up from a bachelor party in Las Vegas with no memory of the previous night.",
+    year: 2009,
+    rating: 7.7
+  },
+  {
+    title: "Tropic Thunder",
+    genre: "Comedy",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/9hFrSWKOl8K3rNhwfnmyXPfKDzR.jpg",
+    description: "Through a series of freak occurrences, a group of actors shooting a war movie are forced to become real soldiers.",
+    year: 2008,
+    rating: 7.1
+  },
+  {
+    title: "Zoolander",
+    genre: "Comedy",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/qdrbcMKfoEtdNrxKZK1QZATNDHa.jpg",
+    description: "A dim-witted male model becomes involved in a plot to assassinate the Prime Minister of Malaysia.",
+    year: 2001,
+    rating: 6.5
+  },
+  {
+    title: "Dumb and Dumber",
+    genre: "Comedy",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/dxuWlJsOdDGThFGIx0bLjJDhX3t.jpg",
+    description: "Two best friends set out on a cross-country trip to return a briefcase to its owner.",
+    year: 1994,
+    rating: 7.3
+  },
+
+  // Additional Drama Movies
+  {
+    title: "Good Will Hunting",
+    genre: "Drama",
+    mood: "Chill",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/rKi1J4S5Dl36lGtRJfJgzjk3Y31.jpg",
+    description: "A janitor at MIT has a gift for mathematics but needs help from a psychologist to find direction in his life.",
+    year: 1997,
+    rating: 8.3
+  },
+  {
+    title: "A Beautiful Mind",
+    genre: "Drama",
+    mood: "Chill",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/vjnzSm1yWEjmeTl2R2YkCG8PalY.jpg",
+    description: "After a brilliant but asocial mathematician accepts a job at Princeton, he struggles with schizophrenia.",
+    year: 2001,
+    rating: 8.2
+  },
+  {
+    title: "Dead Poets Society",
+    genre: "Drama",
+    mood: "Sad",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/vkB0D1lLl0iVUhNm7r7eD3LTy2a.jpg",
+    description: "An English teacher inspires his students to appreciate poetry and seize the day.",
+    year: 1989,
+    rating: 8.1
+  },
+
+  // Additional Romance Movies
+  {
+    title: "Ghost",
+    genre: "Romance",
+    mood: "Sad",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/jYcfyGj3pDYjPgdMhsX1nN7uXJD.jpg",
+    description: "A murdered man tries to communicate with his girlfriend through a psychic medium.",
+    year: 1990,
+    rating: 7.1
+  },
+  {
+    title: "Pretty Woman",
+    genre: "Romance",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/sBaK6xAVwMdmCJqW7s0mPxjvINJ.jpg",
+    description: "A wealthy businessman hires a beautiful escort to accompany him to social events.",
+    year: 1990,
+    rating: 7.0
+  },
+  {
+    title: "The Princess Bride",
+    genre: "Romance",
+    mood: "Happy",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/njpo8TxrfSLxbYFsm0b1y5MlG7b.jpg",
+    description: "A young woman's true love sets out to rescue her from an odious prince.",
+    year: 1987,
+    rating: 8.0
+  },
+
+  // Additional Family Movies
+  {
+    title: "The Lion King",
+    genre: "Family",
+    mood: "Happy",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg",
+    description: "A young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.",
+    year: 1994,
+    rating: 8.5
+  },
+  {
+    title: "Monsters, Inc.",
+    genre: "Family",
+    mood: "Happy",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/sgheSKxZkttIe8ONsf2sWXPgip3.jpg",
+    description: "Monsters generate their city's power by scaring children, but one little girl accidentally enters their world.",
+    year: 2001,
+    rating: 8.1
+  },
+  {
+    title: "Toy Story",
+    genre: "Family",
+    mood: "Happy",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
+    description: "A cowboy doll is profoundly threatened when a new spaceman action figure supplants him as top toy.",
+    year: 1995,
+    rating: 8.3
+  },
+  {
+    title: "WALL-E",
+    genre: "Family",
+    mood: "Chill",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg",
+    description: "In the distant future, a robot left behind to clean a polluted Earth meets another robot and follows her across the galaxy.",
+    year: 2008,
+    rating: 8.2
   }
 ];
 
