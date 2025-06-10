@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Movie } from "@/services/tmdb";
+import type { TubiMovie } from "@/data/tubi-movies";
 import type { AIRecommendation } from "@/services/openrouter";
 
 interface MovieCardProps {
-  movie: Movie;
+  movie: TubiMovie;
   onPickAnother: () => void;
   aiInsight?: AIRecommendation | null;
 }
@@ -22,10 +22,11 @@ export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
                 src={movie.image}
                 alt={`${movie.title} poster`}
                 className="w-full h-64 lg:h-full object-cover"
+                crossOrigin="anonymous"
                 onError={(e) => {
-                  // Fallback to a placeholder if image fails to load
+                  console.log(`Image failed to load for ${movie.title}: ${movie.image}`);
                   const target = e.target as HTMLImageElement;
-                  target.src = "https://images.unsplash.com/photo-1489599516274-2155376b8c9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1200";
+                  target.src = `https://via.placeholder.com/400x600/1a1a1a/ffffff?text=${encodeURIComponent(movie.title)}`;
                 }}
               />
             </div>
