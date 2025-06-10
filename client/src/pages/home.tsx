@@ -25,7 +25,6 @@ export default function Home() {
     });
 
     if (availableMovies.length === 0) {
-      // If no movies match criteria, pick from all movies
       const randomMovie = getRandomTubiMovie();
       setSelectedMovie(randomMovie);
     } else {
@@ -48,17 +47,15 @@ export default function Home() {
       });
 
       if (availableMovies.length === 0) {
-        // Fall back to random selection if no movies match criteria
         pickRandomMovie();
         return;
       }
 
-      // Convert TubiMovie to format expected by AI service
       const moviesForAI = availableMovies.map(movie => ({
         title: movie.title,
         overview: movie.description,
         vote_average: movie.rating,
-        genre_ids: [], // We'll handle genre mapping in the service
+        genre_ids: [],
         adult: !movie.isKidFriendly,
         release_date: movie.year.toString()
       }));
@@ -71,7 +68,6 @@ export default function Home() {
         userPreferences: 'I want something authentic from Tubi\'s catalog'
       });
 
-      // Find the matching TubiMovie
       const recommendedTubiMovie = availableMovies.find(movie => 
         movie.title.toLowerCase() === result.movie.title.toLowerCase()
       ) || availableMovies[0];
@@ -80,7 +76,6 @@ export default function Home() {
       setAiInsight(result.aiInsight);
     } catch (error) {
       console.error('AI recommendation failed:', error);
-      // Fall back to random selection
       pickRandomMovie();
     } finally {
       setIsAiLoading(false);
@@ -102,7 +97,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
             Movies By the Mood
@@ -112,7 +106,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Filters */}
         <div className="max-w-4xl mx-auto mb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
@@ -146,7 +139,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               onClick={pickRandomMovie}
@@ -178,7 +170,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Movie Result */}
         {selectedMovie && (
           <div className="max-w-4xl mx-auto">
             <MovieCard 
@@ -189,7 +180,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* No Selection State */}
         {!selectedMovie && (
           <div className="text-center py-16">
             <div className="text-6xl mb-6">🎬</div>
