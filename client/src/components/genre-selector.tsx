@@ -32,10 +32,10 @@ export function GenreSelector({ selectedGenre, onGenreSelect }: GenreSelectorPro
           onClick={() => handleGenreClick(genre)}
           className={`
             px-5 py-3 lg:px-6 lg:py-4 border rounded-lg text-base lg:text-lg font-medium 
-            transition-all duration-300 hover:scale-105
+            transition-all duration-200
             ${selectedGenre === genre
-              ? 'bg-[hsl(var(--tubi-blue))] border-[hsl(var(--tubi-blue))] shadow-md shadow-[hsl(var(--tubi-blue))]/30 text-white'
-              : 'bg-[hsl(var(--dark-tertiary))] hover:bg-[hsl(var(--tubi-blue))] border-gray-500 hover:border-[hsl(var(--tubi-blue))] text-white hover:shadow-md hover:shadow-[hsl(var(--tubi-blue))]/30'
+              ? 'bg-gradient-to-r from-purple-500 to-pink-600 border-purple-500 text-white'
+              : 'bg-gray-800 hover:bg-gray-700 border-gray-600 hover:border-gray-500 text-white'
             }
           `}
         >
