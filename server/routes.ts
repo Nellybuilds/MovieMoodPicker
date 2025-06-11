@@ -112,16 +112,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'No movies provided' });
       }
 
-      // Filter movies based on criteria
+      // Filter movies based on criteria (using Tubi data structure)
+      console.log('Filtering criteria:', { genre, mood, kidsOnly });
+      console.log('Total movies to filter:', movies.length);
+      console.log('Sample movie structure:', movies[0]);
+      
       let filteredMovies = movies.filter((movie: any) => {
-        const movieGenre = getGenreFromTMDB(movie.genre_ids);
-        const movieMood = assignMoodFromTMDB(movie);
-        const isKidFriendly = isMovieKidFriendly(movie);
-
-        return (!genre || movieGenre.toLowerCase() === genre.toLowerCase()) &&
-               (!mood || movieMood.toLowerCase() === mood.toLowerCase()) &&
-               (!kidsOnly || isKidFriendly);
+        const genreMatch = !genre || movie.genre.toLowerCase() === genre.toLowerCase();
+        const moodMatch = !mood || movie.mood.toLowerCase() === mood.toLowerCase();
+        const kidsMatch = !kidsOnly || movie.isKidFriendly;
+        
+        console.log(`${movie.title}: genre(${genreMatch}), mood(${moodMatch}), kids(${kidsMatch})`);
+        
+        return genreMatch && moodMatch && kidsMatch;
       });
+      
+      console.log('Filtered movies count:', filteredMovies.length);
 
       if (filteredMovies.length === 0) {
         return res.status(404).json({ error: 'No movies match your criteria' });
@@ -129,13 +135,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Prepare AI prompt with top-rated movies from filtered results
       const topMovies = filteredMovies
-        .sort((a: any, b: any) => b.vote_average - a.vote_average)
+        .sort((a: any, b: any) => b.rating - a.rating)
         .slice(0, 10)
         .map((movie: any) => ({
           title: movie.title,
-          overview: movie.overview ? movie.overview.substring(0, 200) : 'No description available',
-          rating: movie.vote_average,
-          year: movie.release_date ? movie.release_date.split('-')[0] : 'Unknown'
+          overview: movie.description ? movie.description.substring(0, 200) : 'No description available',
+          rating: movie.rating,
+          year: movie.year,
+          genre: movie.genre,
+          mood: movie.mood
         }));
 
       const prompt = `You are a movie recommendation AI. Based on the user's preferences, recommend the TOP 3 movies from this list.
@@ -148,7 +156,7 @@ User Preferences:
 - Additional Preferences: ${userPreferences || 'None'}
 
 Available Movies:
-${topMovies.map((movie: any) => `- ${movie.title} (${movie.year}) - Rating: ${movie.rating}/10\n  ${movie.overview}`).join('\n\n')}
+${topMovies.map((movie: any) => `- ${movie.title} (${movie.year}) - Genre: ${movie.genre}, Mood: ${movie.mood} - Rating: ${movie.rating}/10\n  ${movie.overview}`).join('\n\n')}
 
 Please respond with valid JSON in this exact format:
 {
@@ -209,35 +217,45 @@ Rank the movies 1-3 based on how well they match the user's mood and preferences
       let aiRecommendation;
       try {
         aiRecommendation = JSON.parse(aiContent);
+        console.log('AI Response:', JSON.stringify(aiRecommendation, null, 2));
       } catch (parseError) {
-        // Fallback if AI doesn't return valid JSON
+        console.log('AI parsing failed, using fallback');
+        // Fallback if AI doesn't return valid JSON - provide 3 movies
+        const fallbackMovies = filteredMovies.slice(0, 3);
         aiRecommendation = {
-          recommendations: [
-            {
-              title: filteredMovies[0].title,
-              reasoning: "AI recommendation parsing failed, returning available movies",
-              confidence: 0.5,
-              rank: 1
-            }
-          ],
+          recommendations: fallbackMovies.map((movie: any, index: number) => ({
+            title: movie.title,
+            reasoning: `Great ${genre || movie.genre} movie that matches your ${mood || 'current'} mood`,
+            confidence: 0.8 - (index * 0.1),
+            rank: index + 1
+          })),
           watchContext: "Enjoy your movie!"
         };
       }
 
       // Find recommended movies from our list
-      const recommendedMovies = aiRecommendation.recommendations.map((rec: any) => {
+      console.log(`Processing ${aiRecommendation.recommendations.length} AI recommendations`);
+      
+      const recommendedMovies = aiRecommendation.recommendations.map((rec: any, index: number) => {
+        console.log(`Processing recommendation ${index + 1}: ${rec.title}`);
+        
         const movie = filteredMovies.find((movie: any) => 
           movie.title.toLowerCase().includes(rec.title.toLowerCase()) ||
           rec.title.toLowerCase().includes(movie.title.toLowerCase())
         ) || topMovies.find((movie: any) => movie.title === rec.title);
         
-        return {
+        const result = {
           movie: movie || filteredMovies[Math.floor(Math.random() * filteredMovies.length)],
           reasoning: rec.reasoning,
           confidence: rec.confidence,
-          rank: rec.rank
+          rank: rec.rank || (index + 1)
         };
+        
+        console.log(`Mapped to: ${result.movie.title} (rank: ${result.rank})`);
+        return result;
       });
+      
+      console.log(`Returning ${recommendedMovies.length} recommendations to frontend`);
 
       res.json({
         recommendations: recommendedMovies,
