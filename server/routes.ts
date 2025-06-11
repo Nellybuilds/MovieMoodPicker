@@ -114,8 +114,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Filter movies based on criteria (using Tubi data structure)
       let filteredMovies = movies.filter((movie: any) => {
-        return (!genre || movie.genre.toLowerCase() === genre.toLowerCase()) &&
-               (!mood || movie.mood.toLowerCase() === mood.toLowerCase()) &&
+        const movieGenre = movie.genre || '';
+        const movieMood = movie.mood || '';
+        
+        return (!genre || movieGenre.toLowerCase() === genre.toLowerCase()) &&
+               (!mood || movieMood.toLowerCase() === mood.toLowerCase()) &&
                (!kidsOnly || movie.isKidFriendly);
       });
 

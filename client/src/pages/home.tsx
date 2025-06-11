@@ -84,6 +84,8 @@ export default function Home() {
       const result = await response.json();
       
       // Use server recommendations directly (they already contain the full movie objects)
+      console.log('Received recommendations:', result.recommendations);
+      console.log('Number of recommendations:', result.recommendations.length);
       setAiRecommendations(result.recommendations);
       setSelectedMovie(null);
       setAiInsight(null);
