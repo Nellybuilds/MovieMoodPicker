@@ -158,7 +158,7 @@ export default function Home() {
               className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold px-8 py-4 text-lg min-w-[200px] shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Sparkles className="mr-2 h-5 w-5" />
-              {isAiLoading ? 'Finding Perfect Match...' : 'Smart Pick'}
+              {isAiLoading ? 'Finding Perfect Match...' : 'Find My Match'}
             </Button>
             
             <Button
