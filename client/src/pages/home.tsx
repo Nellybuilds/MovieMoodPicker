@@ -15,6 +15,7 @@ export default function Home() {
   const [kidsOnly, setKidsOnly] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<TubiMovie | null>(null);
   const [aiInsight, setAiInsight] = useState<AIRecommendation | null>(null);
+  const [aiRecommendations, setAiRecommendations] = useState<any[]>([]);
   const [isAiLoading, setIsAiLoading] = useState(false);
 
   const pickRandomMovie = () => {
@@ -33,6 +34,7 @@ export default function Home() {
     }
     
     setAiInsight(null);
+    setAiRecommendations([]);
   };
 
   const pickAIMovie = async () => {
@@ -60,20 +62,44 @@ export default function Home() {
         release_date: movie.year.toString()
       }));
 
-      const result = await getAIMovieRecommendation(moviesForAI, {
-        mood: selectedMood || '',
-        genre: selectedGenre || '',
-        kidsOnly: kidsOnly,
-        previouslyWatched: [],
-        userPreferences: 'Find me something great based on my mood and genre preferences'
+      const response = await fetch('/api/ai-recommend', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          movies: moviesForAI,
+          mood: selectedMood || '',
+          genre: selectedGenre || '',
+          kidsOnly: kidsOnly,
+          previouslyWatched: [],
+          userPreferences: 'Find me something great based on my mood and genre preferences'
+        })
       });
 
-      const recommendedTubiMovie = availableMovies.find(movie => 
-        movie.title.toLowerCase() === result.movie.title.toLowerCase()
-      ) || availableMovies[0];
+      if (!response.ok) {
+        throw new Error(`AI recommendation failed: ${response.status}`);
+      }
 
-      setSelectedMovie(recommendedTubiMovie);
-      setAiInsight(result.aiInsight);
+      const result = await response.json();
+      
+      // Map server response to TubiMovies
+      const mappedRecommendations = result.recommendations.map((rec: any) => {
+        const tubiMovie = availableMovies.find(movie => 
+          movie.title.toLowerCase() === rec.movie.title.toLowerCase()
+        ) || availableMovies[0];
+        
+        return {
+          movie: tubiMovie,
+          reasoning: rec.reasoning,
+          confidence: rec.confidence,
+          rank: rec.rank
+        };
+      });
+
+      setAiRecommendations(mappedRecommendations);
+      setSelectedMovie(null);
+      setAiInsight(null);
     } catch (error) {
       console.error('AI recommendation failed:', error);
       pickRandomMovie();
@@ -91,6 +117,13 @@ export default function Home() {
     setSelectedGenre(null);
     setKidsOnly(false);
     setSelectedMovie(null);
+    setAiInsight(null);
+    setAiRecommendations([]);
+  };
+
+  const selectMovieFromRecommendations = (movie: TubiMovie) => {
+    setSelectedMovie(movie);
+    setAiRecommendations([]);
     setAiInsight(null);
   };
 

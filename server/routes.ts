@@ -138,7 +138,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           year: movie.release_date ? movie.release_date.split('-')[0] : 'Unknown'
         }));
 
-      const prompt = `You are a movie recommendation AI. Based on the user's preferences, recommend the BEST movie from this list.
+      const prompt = `You are a movie recommendation AI. Based on the user's preferences, recommend the TOP 3 movies from this list.
 
 User Preferences:
 - Mood: ${mood || 'any'}
@@ -152,14 +152,30 @@ ${topMovies.map((movie: any) => `- ${movie.title} (${movie.year}) - Rating: ${mo
 
 Please respond with valid JSON in this exact format:
 {
-  "recommendedMovie": "Movie Title Here",
-  "reasoning": "Why this movie is perfect for the user's mood and preferences",
-  "confidence": 0.95,
-  "alternativeGenres": ["genre1", "genre2"],
-  "watchContext": "Perfect for a cozy evening at home"
+  "recommendations": [
+    {
+      "title": "Movie Title Here",
+      "reasoning": "Why this movie fits the user's preferences",
+      "confidence": 0.95,
+      "rank": 1
+    },
+    {
+      "title": "Second Movie Title",
+      "reasoning": "Why this is also a good choice",
+      "confidence": 0.85,
+      "rank": 2
+    },
+    {
+      "title": "Third Movie Title", 
+      "reasoning": "Alternative option that matches preferences",
+      "confidence": 0.75,
+      "rank": 3
+    }
+  ],
+  "watchContext": "Perfect for your current mood"
 }
 
-Choose the movie that best matches the user's mood and preferences. Be specific about why it's the perfect choice.`;
+Rank the movies 1-3 based on how well they match the user's mood and preferences.`;
 
       const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -196,29 +212,36 @@ Choose the movie that best matches the user's mood and preferences. Be specific 
       } catch (parseError) {
         // Fallback if AI doesn't return valid JSON
         aiRecommendation = {
-          recommendedMovie: filteredMovies[0].title,
-          reasoning: "AI recommendation parsing failed, returning first available movie",
-          confidence: 0.5,
-          alternativeGenres: [genre || 'Drama'],
+          recommendations: [
+            {
+              title: filteredMovies[0].title,
+              reasoning: "AI recommendation parsing failed, returning available movies",
+              confidence: 0.5,
+              rank: 1
+            }
+          ],
           watchContext: "Enjoy your movie!"
         };
       }
 
-      // Find the recommended movie in our original list
-      const recommendedMovie = filteredMovies.find((movie: any) => 
-        movie.title.toLowerCase().includes(aiRecommendation.recommendedMovie.toLowerCase()) ||
-        aiRecommendation.recommendedMovie.toLowerCase().includes(movie.title.toLowerCase())
-      ) || topMovies.find((movie: any) => movie.title === aiRecommendation.recommendedMovie) || 
-      filteredMovies[Math.floor(Math.random() * filteredMovies.length)];
+      // Find recommended movies from our list
+      const recommendedMovies = aiRecommendation.recommendations.map((rec: any) => {
+        const movie = filteredMovies.find((movie: any) => 
+          movie.title.toLowerCase().includes(rec.title.toLowerCase()) ||
+          rec.title.toLowerCase().includes(movie.title.toLowerCase())
+        ) || topMovies.find((movie: any) => movie.title === rec.title);
+        
+        return {
+          movie: movie || filteredMovies[Math.floor(Math.random() * filteredMovies.length)],
+          reasoning: rec.reasoning,
+          confidence: rec.confidence,
+          rank: rec.rank
+        };
+      });
 
       res.json({
-        movie: recommendedMovie,
-        aiInsight: {
-          reasoning: aiRecommendation.reasoning,
-          confidence: aiRecommendation.confidence,
-          alternativeGenres: aiRecommendation.alternativeGenres || [],
-          watchContext: aiRecommendation.watchContext
-        }
+        recommendations: recommendedMovies,
+        watchContext: aiRecommendation.watchContext
       });
 
     } catch (error) {
