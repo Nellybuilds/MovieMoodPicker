@@ -205,7 +205,59 @@ export default function Home() {
           </div>
         </div>
 
-        {selectedMovie && (
+        {/* AI Recommendations */}
+        {aiRecommendations.length > 0 && (
+          <div className="max-w-6xl mx-auto mb-12">
+            <h2 className="text-3xl font-bold text-center mb-8 text-orange-400">Your Perfect Matches</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {aiRecommendations.map((rec, index) => (
+                <div key={index} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all duration-200 cursor-pointer"
+                     onClick={() => selectMovieFromRecommendations(rec.movie)}>
+                  <div className="flex items-center mb-4">
+                    <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold mr-3">
+                      #{rec.rank}
+                    </span>
+                    <span className="text-purple-400 text-sm font-medium">
+                      {Math.round(rec.confidence * 100)}% match
+                    </span>
+                  </div>
+                  
+                  <img 
+                    src={rec.movie.image}
+                    alt={`${rec.movie.title} poster`}
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = `https://via.placeholder.com/300x400/1a1a1a/ffffff?text=${encodeURIComponent(rec.movie.title)}`;
+                    }}
+                  />
+                  
+                  <h3 className="text-xl font-bold mb-2 text-white">{rec.movie.title}</h3>
+                  
+                  <div className="flex gap-2 mb-3">
+                    <span className="px-2 py-1 bg-gray-700 text-white text-xs rounded-full">
+                      {rec.movie.genre}
+                    </span>
+                    <span className="px-2 py-1 bg-gray-700 text-white text-xs rounded-full">
+                      {rec.movie.mood}
+                    </span>
+                  </div>
+                  
+                  <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                    {rec.reasoning}
+                  </p>
+                  
+                  <button className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200">
+                    Watch This
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Single Movie Result */}
+        {selectedMovie && aiRecommendations.length === 0 && (
           <div className="max-w-4xl mx-auto">
             <MovieCard 
               movie={selectedMovie} 
@@ -215,7 +267,8 @@ export default function Home() {
           </div>
         )}
 
-        {!selectedMovie && (
+        {/* No Selection State */}
+        {!selectedMovie && aiRecommendations.length === 0 && (
           <div className="text-center py-16">
             <div className="text-6xl mb-6">🎬</div>
             <h2 className="text-3xl font-bold mb-4 text-gray-300">Ready to discover your next movie?</h2>
