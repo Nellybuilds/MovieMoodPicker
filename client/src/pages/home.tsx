@@ -64,8 +64,8 @@ export default function Home() {
         mood: selectedMood || '',
         genre: selectedGenre || '',
         kidsOnly: kidsOnly,
-        previouslyWatched: selectedMovie ? [selectedMovie.title] : [],
-        userPreferences: 'I want something authentic from Tubi\'s catalog'
+        previouslyWatched: [],
+        userPreferences: 'Find me something great based on my mood and genre preferences'
       });
 
       const recommendedTubiMovie = availableMovies.find(movie => 
