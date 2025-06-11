@@ -83,21 +83,8 @@ export default function Home() {
 
       const result = await response.json();
       
-      // Map server response to TubiMovies
-      const mappedRecommendations = result.recommendations.map((rec: any) => {
-        const tubiMovie = availableMovies.find(movie => 
-          movie.title.toLowerCase() === rec.movie.title.toLowerCase()
-        ) || availableMovies[0];
-        
-        return {
-          movie: tubiMovie,
-          reasoning: rec.reasoning,
-          confidence: rec.confidence,
-          rank: rec.rank
-        };
-      });
-
-      setAiRecommendations(mappedRecommendations);
+      // Use server recommendations directly (they already contain the full movie objects)
+      setAiRecommendations(result.recommendations);
       setSelectedMovie(null);
       setAiInsight(null);
     } catch (error) {

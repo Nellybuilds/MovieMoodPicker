@@ -449,6 +449,312 @@ export const tubiMovies: TubiMovie[] = [
     year: 2001,
     rating: 8.1
   },
+
+  // Additional Action Movies
+  {
+    title: "Mad Max: Fury Road",
+    genre: "Action",
+    mood: "Adventurous",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/hA2ple9q4qnwxp3hKVNhroipsir.jpg",
+    description: "In a post-apocalyptic wasteland, a woman rebels against a tyrannical ruler in search for her homeland.",
+    year: 2015,
+    rating: 8.1
+  },
+  {
+    title: "The Fast and the Furious",
+    genre: "Action",
+    mood: "Adventurous",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/ljsZTbVsrQSqZgWeep2B1QiDKuh.jpg",
+    description: "Los Angeles police officer goes undercover in the street racing underworld.",
+    year: 2001,
+    rating: 6.8
+  },
+  {
+    title: "Speed",
+    genre: "Action",
+    mood: "Adventurous",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/fOBTp2IaNEL9VHCSTn2a0Uu4XFl.jpg",
+    description: "A young police officer must prevent a bomb exploding aboard a city bus.",
+    year: 1994,
+    rating: 7.3
+  },
+  {
+    title: "Face/Off",
+    genre: "Action",
+    mood: "Adventurous",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/9ZzNiQYzGPe7rdJqfUuHnK5Ew60.jpg",
+    description: "An FBI agent and a terrorist swap faces and identities.",
+    year: 1997,
+    rating: 7.3
+  },
+
+  // More Horror Movies
+  {
+    title: "Scream",
+    genre: "Horror",
+    mood: "Scared",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/mX7JRHKe0Xw6UrWkQG1Kqhh7WB6.jpg",
+    description: "A year after her mother's murder, a teenage girl is terrorized by a new killer.",
+    year: 1996,
+    rating: 7.4
+  },
+  {
+    title: "The Ring",
+    genre: "Horror",
+    mood: "Scared",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/k7TN5pEXPEqJm0OWfSWuGLWkj0T.jpg",
+    description: "A journalist investigates a mysterious videotape that seems to cause the death of anyone who watches it.",
+    year: 2002,
+    rating: 7.1
+  },
+  {
+    title: "It Follows",
+    genre: "Horror",
+    mood: "Scared",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/8pFtowP0kIUyJ2S7Xpx3QfWcJwY.jpg",
+    description: "A young woman is followed by an unknown supernatural force after a sexual encounter.",
+    year: 2014,
+    rating: 6.8
+  },
+  {
+    title: "The Babadook",
+    genre: "Horror",
+    mood: "Scared",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/wTCVPHEY6DlpM8YjvE5uOOKhLnL.jpg",
+    description: "A single mother and her child fall into a deep well of paranoia when an eerie children's book appears.",
+    year: 2014,
+    rating: 6.8
+  },
+
+  // Additional Comedy Movies
+  {
+    title: "Airplane!",
+    genre: "Comedy",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/5h8xgZdDMmf6KgJo9O8hUNlsJLN.jpg",
+    description: "A man afraid to fly must ensure that an airplane lands safely after the pilots become sick.",
+    year: 1980,
+    rating: 7.7
+  },
+  {
+    title: "The Naked Gun",
+    genre: "Comedy",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/7TKqm8QhF6WN8M9d8n8VCwMd7uJ.jpg",
+    description: "Incompetent police Detective Frank Drebin must foil an attempt to assassinate Queen Elizabeth II.",
+    year: 1988,
+    rating: 7.6
+  },
+  {
+    title: "Dumb and Dumber",
+    genre: "Comedy",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/oWPKJ9XN4VoSJP1Cx2O5y0h2bgg.jpg",
+    description: "Two dimwitted friends go on a cross-country trip to return a briefcase full of money.",
+    year: 1994,
+    rating: 7.3
+  },
+  {
+    title: "Anchorman",
+    genre: "Comedy",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/9JqXhjJP87RCo1d5u0RfKBOHX8l.jpg",
+    description: "Ron Burgundy is San Diego's top-rated newsman in the male-dominated broadcasting of the 1970s.",
+    year: 2004,
+    rating: 7.2
+  },
+
+  // More Drama Movies
+  {
+    title: "The Pursuit of Happyness",
+    genre: "Drama",
+    mood: "Sad",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/pGm6bHhPOeY3QjCCVNzPM1v1xI1.jpg",
+    description: "A struggling salesman takes custody of his son as he's poised to begin a life-changing professional career.",
+    year: 2006,
+    rating: 8.0
+  },
+  {
+    title: "A Beautiful Mind",
+    genre: "Drama",
+    mood: "Sad",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/nHG3LbcT10QjcxF0YnZtILgLGjK.jpg",
+    description: "After John Nash suffers a nervous breakdown, his loving wife Alicia struggles to help him.",
+    year: 2001,
+    rating: 8.2
+  },
+  {
+    title: "Good Will Hunting",
+    genre: "Drama",
+    mood: "Sad",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/bABCBKYBK7A5G1x0FzoeoNfuj2.jpg",
+    description: "Will Hunting is a genius working as a janitor at MIT who needs help from a psychologist.",
+    year: 1997,
+    rating: 8.3
+  },
+  {
+    title: "Rain Man",
+    genre: "Drama",
+    mood: "Sad",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/m7mJ2JnShgF9Hff5jJ9xjdSS4eZ.jpg",
+    description: "A young man discovers he has an autistic brother and takes him on a cross-country journey.",
+    year: 1988,
+    rating: 8.0
+  },
+
+  // More Family Movies
+  {
+    title: "Finding Nemo",
+    genre: "Family",
+    mood: "Happy",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/6vKR8LF8b0KZTMSQLz1xMJ9aqMH.jpg",
+    description: "A fish named Marlin searches for his missing son Nemo with the help of Dory.",
+    year: 2003,
+    rating: 8.2
+  },
+  {
+    title: "Toy Story",
+    genre: "Family",
+    mood: "Happy",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
+    description: "A cowboy doll is profoundly threatened by a new spaceman figure.",
+    year: 1995,
+    rating: 8.3
+  },
+  {
+    title: "The Incredibles",
+    genre: "Family",
+    mood: "Adventurous",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/2LqaLgk4Z226KkgPJuiOQ58wvrm.jpg",
+    description: "A family of undercover superheroes tries to live a quiet suburban life.",
+    year: 2004,
+    rating: 8.0
+  },
+  {
+    title: "Shrek",
+    genre: "Family",
+    mood: "Happy",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/iB64vpL3dIObOtMZgX3RqdVdQDc.jpg",
+    description: "An ogre embarks on a quest to rescue a princess for a lord.",
+    year: 2001,
+    rating: 7.9
+  },
+
+  // Documentary Movies
+  {
+    title: "March of the Penguins",
+    genre: "Documentary",
+    mood: "Chill",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/lRMHJLMZ8EE9LMlgpL0l5i8Q9o3.jpg",
+    description: "Documentary following Emperor penguins as they make their journey to their breeding ground.",
+    year: 2005,
+    rating: 7.5
+  },
+  {
+    title: "An Inconvenient Truth",
+    genre: "Documentary",
+    mood: "Chill",
+    isKidFriendly: true,
+    image: "https://image.tmdb.org/t/p/w500/4Lq9IzG5nfXvjKlnTPzrR7dDSgD.jpg",
+    description: "Al Gore campaigns to educate the public about global warming.",
+    year: 2006,
+    rating: 7.4
+  },
+  {
+    title: "Bowling for Columbine",
+    genre: "Documentary",
+    mood: "Chill",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/wMM6vPJ2M4uAGPrAE4rRnLvQOVH.jpg",
+    description: "Michael Moore explores the reasons for the 1999 Columbine High School massacre.",
+    year: 2002,
+    rating: 8.0
+  },
+
+  // More Romance Movies
+  {
+    title: "When Harry Met Sally",
+    genre: "Romance",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/m9FHqDVDSHWZMGFmXpBJ3jJCCr7.jpg",
+    description: "Harry and Sally have known each other for years, and are very good friends.",
+    year: 1989,
+    rating: 7.7
+  },
+  {
+    title: "Sleepless in Seattle",
+    genre: "Romance",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/6I2tT8eD4VTMUtqOPG3vu2KfaH7.jpg",
+    description: "A recently widowed man's son calls a radio talk-show in an attempt to find his father a partner.",
+    year: 1993,
+    rating: 6.8
+  },
+  {
+    title: "You've Got Mail",
+    genre: "Romance",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/jylK4s7w3QBnQQpq1aAz8A3cJJO.jpg",
+    description: "Two business rivals who despise each other in real life fall in love over the Internet.",
+    year: 1998,
+    rating: 6.7
+  },
+
+  // Additional Chill/Drama Movies
+  {
+    title: "Lost in Translation",
+    genre: "Drama",
+    mood: "Chill",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/w7d0BquKqw4QjHXZIw9Kil0tSa4.jpg",
+    description: "A fading movie star and a neglected young woman form an unlikely bond in Tokyo.",
+    year: 2003,
+    rating: 7.7
+  },
+  {
+    title: "Her",
+    genre: "Drama",
+    mood: "Chill",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/lEIaL12hSkqqe83kgADkbUqEnvk.jpg",
+    description: "A writer develops an unlikely relationship with an operating system designed to meet his every need.",
+    year: 2013,
+    rating: 8.0
+  },
+  {
+    title: "The Grand Budapest Hotel",
+    genre: "Comedy",
+    mood: "Chill",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/mcpZWQb1VNSHkJm8ZiLe0YPJIJa.jpg",
+    description: "The adventures of a legendary concierge and his protégé at a famous European hotel.",
+    year: 2014,
+    rating: 8.1
+  },
   {
     title: "Toy Story",
     genre: "Family",
