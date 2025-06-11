@@ -113,21 +113,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Filter movies based on criteria (using Tubi data structure)
-      console.log('Filtering criteria:', { genre, mood, kidsOnly });
-      console.log('Total movies to filter:', movies.length);
-      console.log('Sample movie structure:', movies[0]);
-      
       let filteredMovies = movies.filter((movie: any) => {
-        const genreMatch = !genre || movie.genre.toLowerCase() === genre.toLowerCase();
-        const moodMatch = !mood || movie.mood.toLowerCase() === mood.toLowerCase();
-        const kidsMatch = !kidsOnly || movie.isKidFriendly;
-        
-        console.log(`${movie.title}: genre(${genreMatch}), mood(${moodMatch}), kids(${kidsMatch})`);
-        
-        return genreMatch && moodMatch && kidsMatch;
+        return (!genre || movie.genre.toLowerCase() === genre.toLowerCase()) &&
+               (!mood || movie.mood.toLowerCase() === mood.toLowerCase()) &&
+               (!kidsOnly || movie.isKidFriendly);
       });
-      
-      console.log('Filtered movies count:', filteredMovies.length);
 
       if (filteredMovies.length === 0) {
         return res.status(404).json({ error: 'No movies match your criteria' });
@@ -217,9 +207,7 @@ Rank the movies 1-3 based on how well they match the user's mood and preferences
       let aiRecommendation;
       try {
         aiRecommendation = JSON.parse(aiContent);
-        console.log('AI Response:', JSON.stringify(aiRecommendation, null, 2));
       } catch (parseError) {
-        console.log('AI parsing failed, using fallback');
         // Fallback if AI doesn't return valid JSON - provide 3 movies
         const fallbackMovies = filteredMovies.slice(0, 3);
         aiRecommendation = {
@@ -233,29 +221,60 @@ Rank the movies 1-3 based on how well they match the user's mood and preferences
         };
       }
 
-      // Find recommended movies from our list
-      console.log(`Processing ${aiRecommendation.recommendations.length} AI recommendations`);
+      // Find recommended movies from our list, ensuring unique movies
+      const usedMovies = new Set();
+      const recommendedMovies = [];
       
-      const recommendedMovies = aiRecommendation.recommendations.map((rec: any, index: number) => {
-        console.log(`Processing recommendation ${index + 1}: ${rec.title}`);
+      for (let i = 0; i < aiRecommendation.recommendations.length && recommendedMovies.length < 3; i++) {
+        const rec = aiRecommendation.recommendations[i];
         
-        const movie = filteredMovies.find((movie: any) => 
-          movie.title.toLowerCase().includes(rec.title.toLowerCase()) ||
-          rec.title.toLowerCase().includes(movie.title.toLowerCase())
-        ) || topMovies.find((movie: any) => movie.title === rec.title);
+        // Try to find exact match first
+        let movie = filteredMovies.find((movie: any) => 
+          movie.title.toLowerCase() === rec.title.toLowerCase()
+        );
         
-        const result = {
-          movie: movie || filteredMovies[Math.floor(Math.random() * filteredMovies.length)],
-          reasoning: rec.reasoning,
-          confidence: rec.confidence,
-          rank: rec.rank || (index + 1)
-        };
+        // If no exact match, try partial match
+        if (!movie) {
+          movie = filteredMovies.find((movie: any) => 
+            movie.title.toLowerCase().includes(rec.title.toLowerCase()) ||
+            rec.title.toLowerCase().includes(movie.title.toLowerCase())
+          );
+        }
         
-        console.log(`Mapped to: ${result.movie.title} (rank: ${result.rank})`);
-        return result;
-      });
+        // If still no match, pick an unused movie from filtered list
+        if (!movie || usedMovies.has(movie.title)) {
+          const availableMovies = filteredMovies.filter((m: any) => !usedMovies.has(m.title));
+          if (availableMovies.length > 0) {
+            movie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+          }
+        }
+        
+        if (movie && !usedMovies.has(movie.title)) {
+          usedMovies.add(movie.title);
+          recommendedMovies.push({
+            movie: movie,
+            reasoning: rec.reasoning,
+            confidence: rec.confidence,
+            rank: rec.rank || (i + 1)
+          });
+        }
+      }
       
-      console.log(`Returning ${recommendedMovies.length} recommendations to frontend`);
+      // If we still don't have 3 unique movies, fill with remaining filtered movies
+      while (recommendedMovies.length < 3 && recommendedMovies.length < filteredMovies.length) {
+        const availableMovies = filteredMovies.filter((m: any) => !usedMovies.has(m.title));
+        if (availableMovies.length === 0) break;
+        
+        const movie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+        usedMovies.add(movie.title);
+        
+        recommendedMovies.push({
+          movie: movie,
+          reasoning: `Great ${movie.genre.toLowerCase()} movie that matches your ${movie.mood.toLowerCase()} mood`,
+          confidence: 0.7 - (recommendedMovies.length * 0.1),
+          rank: recommendedMovies.length + 1
+        });
+      }
 
       res.json({
         recommendations: recommendedMovies,
