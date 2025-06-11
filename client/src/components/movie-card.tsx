@@ -39,14 +39,14 @@ export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
               
               {/* Badges */}
               <div className="flex flex-wrap gap-2 mb-4">
-                <Badge className="px-3 py-1 bg-[hsl(var(--tubi-blue))] text-white text-sm font-medium rounded-full">
+                <Badge className="px-3 py-1 bg-gray-700 text-white text-sm font-medium rounded-full border border-gray-600">
                   {movie.genre}
                 </Badge>
-                <Badge className="px-3 py-1 bg-[hsl(var(--tubi-purple))] text-white text-sm font-medium rounded-full">
+                <Badge className="px-3 py-1 bg-gray-700 text-white text-sm font-medium rounded-full border border-gray-600">
                   {movie.mood}
                 </Badge>
                 {movie.isKidFriendly && (
-                  <Badge className="px-3 py-1 bg-emerald-600 text-white text-sm font-medium rounded-full">
+                  <Badge className="px-3 py-1 bg-emerald-700 text-white text-sm font-medium rounded-full border border-emerald-600">
                     Kid Friendly
                   </Badge>
                 )}
