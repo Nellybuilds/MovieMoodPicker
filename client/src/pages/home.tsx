@@ -55,11 +55,13 @@ export default function Home() {
 
       const moviesForAI = availableMovies.map(movie => ({
         title: movie.title,
-        overview: movie.description,
-        vote_average: movie.rating,
-        genre_ids: [],
-        adult: !movie.isKidFriendly,
-        release_date: movie.year.toString()
+        description: movie.description,
+        rating: movie.rating,
+        genre: movie.genre,
+        mood: movie.mood,
+        isKidFriendly: movie.isKidFriendly,
+        year: movie.year,
+        image: movie.image
       }));
 
       const response = await fetch('/api/ai-recommend', {
