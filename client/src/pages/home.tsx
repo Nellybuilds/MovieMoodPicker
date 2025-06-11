@@ -126,15 +126,26 @@ export default function Home() {
             
             <div>
               <h3 className="text-2xl font-semibold mb-4 text-orange-400">Additional Options</h3>
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="kids-only" 
-                  checked={kidsOnly}
-                  onCheckedChange={(checked) => setKidsOnly(checked === true)}
-                />
-                <Label htmlFor="kids-only" className="text-lg">
-                  Kids & Family Only
-                </Label>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="kids-only" 
+                    checked={kidsOnly}
+                    onCheckedChange={(checked) => setKidsOnly(checked === true)}
+                  />
+                  <Label htmlFor="kids-only" className="text-lg">
+                    Kids & Family Only
+                  </Label>
+                </div>
+                
+                <Button
+                  onClick={pickRandomMovie}
+                  size="sm"
+                  className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold px-6 py-2 text-base w-full shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  <Shuffle className="mr-2 h-4 w-4" />
+                  Surprise Me
+                </Button>
               </div>
             </div>
           </div>
@@ -148,15 +159,6 @@ export default function Home() {
             >
               <Sparkles className="mr-2 h-5 w-5" />
               {isAiLoading ? 'Finding Perfect Match...' : 'Smart Pick'}
-            </Button>
-            
-            <Button
-              onClick={pickRandomMovie}
-              size="lg"
-              className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold px-8 py-4 text-lg min-w-[200px] shadow-lg hover:shadow-xl transition-all duration-200"
-            >
-              <Shuffle className="mr-2 h-5 w-5" />
-              Surprise Me
             </Button>
             
             <Button
