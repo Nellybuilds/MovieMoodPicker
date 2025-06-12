@@ -257,7 +257,7 @@ export default function Home() {
                     {rec.reasoning}
                   </p>
                   
-                  <button className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200">
+                  <button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-semibold py-2 px-4 rounded-lg transition-all duration-200">
                     Watch This
                   </button>
                 </div>

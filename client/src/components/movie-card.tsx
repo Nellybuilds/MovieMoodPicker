@@ -13,7 +13,7 @@ interface MovieCardProps {
 export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
   return (
     <div className="max-w-4xl mx-auto">
-      <Card className="bg-[hsl(var(--dark-secondary))] rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
+      <Card className="bg-gray-900 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
         <CardContent className="p-0">
           <div className="flex flex-col lg:flex-row">
             {/* Movie Poster */}
@@ -69,22 +69,22 @@ export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
 
               {/* AI Insights */}
               {aiInsight && (
-                <div className="mb-6 p-4 bg-emerald-900/30 border border-emerald-700/50 rounded-lg">
+                <div className="mb-6 p-4 bg-yellow-900/20 border border-yellow-600/30 rounded-lg">
                   <div className="flex items-center mb-2">
-                    <span className="text-emerald-400 text-sm font-medium mr-2">🤖 AI Recommendation</span>
-                    <Badge className="px-2 py-1 bg-emerald-600 text-white text-xs">
+                    <span className="text-yellow-400 text-sm font-medium mr-2">🤖 AI Recommendation</span>
+                    <Badge className="px-2 py-1 bg-yellow-600 text-black text-xs">
                       {Math.round(aiInsight.confidence * 100)}% match
                     </Badge>
                   </div>
-                  <p className="text-emerald-100 text-sm mb-2">{aiInsight.reasoning}</p>
-                  <p className="text-emerald-200 text-xs">{aiInsight.watchContext}</p>
+                  <p className="text-yellow-100 text-sm mb-2">{aiInsight.reasoning}</p>
+                  <p className="text-yellow-200 text-xs">{aiInsight.watchContext}</p>
                 </div>
               )}
               
               {/* Pick Another Button */}
               <Button 
                 onClick={onPickAnother}
-                className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors duration-300"
+                className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-black font-semibold rounded-lg transition-colors duration-300"
               >
                 Pick Another
               </Button>
