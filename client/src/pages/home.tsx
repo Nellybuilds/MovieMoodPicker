@@ -213,15 +213,22 @@ export default function Home() {
                     </span>
                   </div>
                   
-                  <img 
-                    src={rec.movie.image}
-                    alt={`${rec.movie.title} poster`}
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = `https://via.placeholder.com/300x400/1a1a1a/ffffff?text=${encodeURIComponent(rec.movie.title)}`;
-                    }}
-                  />
+                  <div className="w-full h-48 rounded-lg mb-4 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+                    <div className="text-center p-4">
+                      <div className="text-4xl mb-2">
+                        {rec.movie.genre === 'Action' && '⚡'}
+                        {rec.movie.genre === 'Horror' && '🎭'}
+                        {rec.movie.genre === 'Comedy' && '😄'}
+                        {rec.movie.genre === 'Romance' && '💖'}
+                        {rec.movie.genre === 'Drama' && '🎬'}
+                        {rec.movie.genre === 'Family' && '👨‍👩‍👧‍👦'}
+                        {rec.movie.genre === 'Documentary' && '📚'}
+                        {!['Action', 'Horror', 'Comedy', 'Romance', 'Drama', 'Family', 'Documentary'].includes(rec.movie.genre) && '🎥'}
+                      </div>
+                      <h4 className="text-white font-bold text-sm leading-tight">{rec.movie.title}</h4>
+                      <p className="text-gray-300 text-xs mt-1">{rec.movie.year}</p>
+                    </div>
+                  </div>
                   
                   <h3 className="text-xl font-bold mb-2 text-white">{rec.movie.title}</h3>
                   
