@@ -26,7 +26,17 @@ export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
                 onError={(e) => {
                   console.log(`Image failed to load for ${movie.title}: ${movie.image}`);
                   const target = e.target as HTMLImageElement;
-                  target.src = `https://via.placeholder.com/400x600/1a1a1a/ffffff?text=${encodeURIComponent(movie.title)}`;
+                  // Try alternative TMDB image sizes
+                  if (target.src.includes('w500')) {
+                    target.src = target.src.replace('w500', 'w342');
+                  } else if (target.src.includes('w342')) {
+                    target.src = target.src.replace('w342', 'w185');
+                  } else if (target.src.includes('w185')) {
+                    target.src = target.src.replace('w185', 'original');
+                  } else {
+                    // Only use placeholder as final fallback
+                    target.src = `https://via.placeholder.com/400x600/1a1a1a/ffffff?text=${encodeURIComponent(movie.title)}`;
+                  }
                 }}
               />
             </div>

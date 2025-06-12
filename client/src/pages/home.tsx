@@ -217,21 +217,25 @@ export default function Home() {
                     src={rec.movie.image}
                     alt={`${rec.movie.title} poster`}
                     className="w-full h-48 object-cover rounded-lg mb-4"
+                    crossOrigin="anonymous"
                     onError={(e) => {
+                      console.log(`Image failed to load for ${rec.movie.title}: ${rec.movie.image}`);
                       const target = e.target as HTMLImageElement;
-                      // Use TMDB's backup image sizes if primary fails
+                      // Try alternative TMDB image sizes first
                       if (target.src.includes('w500')) {
                         target.src = target.src.replace('w500', 'w342');
                       } else if (target.src.includes('w342')) {
                         target.src = target.src.replace('w342', 'w185');
+                      } else if (target.src.includes('w185')) {
+                        target.src = target.src.replace('w185', 'original');
                       } else {
-                        // Only show movie title if all poster attempts fail
+                        // Create elegant movie poster placeholder
                         target.style.display = 'none';
                         const parent = target.parentElement;
                         if (parent && !parent.querySelector('.poster-fallback')) {
                           const fallback = document.createElement('div');
-                          fallback.className = 'poster-fallback w-full h-48 bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg mb-4 flex items-center justify-center';
-                          fallback.innerHTML = `<div class="text-center p-4"><div class="text-white font-bold">${rec.movie.title}</div><div class="text-gray-300 text-sm">${rec.movie.year}</div></div>`;
+                          fallback.className = 'poster-fallback w-full h-48 bg-gradient-to-br from-purple-900 to-gray-900 rounded-lg mb-4 flex items-center justify-center border border-gray-700';
+                          fallback.innerHTML = `<div class="text-center p-4"><div class="text-white font-bold text-lg">${rec.movie.title}</div><div class="text-gray-300 text-sm">${rec.movie.year}</div><div class="text-purple-400 text-xs mt-2">🎬 ${rec.movie.genre}</div></div>`;
                           parent.insertBefore(fallback, target);
                         }
                       }
