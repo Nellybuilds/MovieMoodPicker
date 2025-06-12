@@ -43,7 +43,7 @@ export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
             
             {/* Movie Details */}
             <div className="lg:w-2/3 p-6 lg:p-8">
-              <h3 className="text-2xl lg:text-4xl font-bold mb-4 text-white">
+              <h3 className="text-2xl lg:text-4xl font-display font-bold mb-4 text-white">
                 {movie.title}
               </h3>
               
@@ -63,7 +63,7 @@ export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
               </div>
               
               {/* Description */}
-              <p className="text-gray-300 text-base lg:text-lg leading-relaxed mb-6">
+              <p className="text-gray-300 text-base lg:text-lg font-body leading-relaxed mb-6">
                 {movie.description}
               </p>
 
@@ -84,7 +84,7 @@ export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
               {/* Pick Another Button */}
               <Button 
                 onClick={onPickAnother}
-                className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-black font-semibold rounded-lg transition-colors duration-300"
+                className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-black font-display font-semibold rounded-lg transition-colors duration-300"
               >
                 Pick Another
               </Button>

@@ -199,7 +199,7 @@ export default function Home() {
         {/* AI Recommendations */}
         {aiRecommendations.length > 0 && (
           <div className="max-w-6xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold text-center mb-8 text-yellow-400">Your Perfect Matches</h2>
+            <h2 className="text-3xl font-display font-bold text-center mb-8 text-yellow-400">Your Perfect Matches</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {aiRecommendations.map((rec, index) => (
                 <div key={index} className="bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-yellow-500 transition-all duration-200 cursor-pointer"
@@ -242,22 +242,22 @@ export default function Home() {
                     }}
                   />
                   
-                  <h3 className="text-xl font-bold mb-2 text-white">{rec.movie.title}</h3>
+                  <h3 className="text-xl font-display font-bold mb-2 text-white">{rec.movie.title}</h3>
                   
                   <div className="flex gap-2 mb-3">
-                    <span className="px-2 py-1 bg-gray-700 text-white text-xs rounded-full">
+                    <span className="px-2 py-1 bg-gray-700 text-white text-xs font-body rounded-full">
                       {rec.movie.genre}
                     </span>
-                    <span className="px-2 py-1 bg-gray-700 text-white text-xs rounded-full">
+                    <span className="px-2 py-1 bg-gray-700 text-white text-xs font-body rounded-full">
                       {rec.movie.mood}
                     </span>
                   </div>
                   
-                  <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                  <p className="text-gray-300 text-sm font-body leading-relaxed mb-4">
                     {rec.reasoning}
                   </p>
                   
-                  <button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-semibold py-2 px-4 rounded-lg transition-all duration-200">
+                  <button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-display font-semibold py-2 px-4 rounded-lg transition-all duration-200">
                     Watch This
                   </button>
                 </div>
