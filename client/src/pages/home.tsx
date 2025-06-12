@@ -119,10 +119,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+          <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
             Movies By the Mood
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
@@ -133,7 +133,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto mb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h3 className="text-2xl font-semibold mb-4 text-orange-400">How are you feeling?</h3>
+              <h3 className="text-2xl font-semibold mb-4 text-yellow-400">How are you feeling?</h3>
               <MoodSelector 
                 selectedMood={selectedMood} 
                 onMoodSelect={setSelectedMood} 
@@ -141,7 +141,7 @@ export default function Home() {
             </div>
             
             <div>
-              <h3 className="text-2xl font-semibold mb-4 text-orange-400">What genre?</h3>
+              <h3 className="text-2xl font-semibold mb-4 text-yellow-400">What genre?</h3>
               <GenreSelector 
                 selectedGenre={selectedGenre} 
                 onGenreSelect={setSelectedGenre} 
@@ -149,7 +149,7 @@ export default function Home() {
             </div>
             
             <div>
-              <h3 className="text-2xl font-semibold mb-4 text-orange-400">Additional Options</h3>
+              <h3 className="text-2xl font-semibold mb-4 text-yellow-400">Additional Options</h3>
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox 
@@ -165,7 +165,7 @@ export default function Home() {
                 <Button
                   onClick={pickRandomMovie}
                   size="sm"
-                  className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold px-6 py-2 text-base w-full shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-semibold px-6 py-2 text-base w-full shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   <Shuffle className="mr-2 h-4 w-4" />
                   Surprise Me
@@ -179,7 +179,7 @@ export default function Home() {
               onClick={pickAIMovie}
               disabled={isAiLoading}
               size="lg"
-              className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold px-8 py-4 text-lg min-w-[200px] shadow-lg hover:shadow-xl transition-all duration-200"
+              className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-black font-bold px-8 py-4 text-lg min-w-[200px] shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Sparkles className="mr-2 h-5 w-5" />
               {isAiLoading ? 'Finding Perfect Match...' : 'Find My Match'}
@@ -189,7 +189,7 @@ export default function Home() {
               onClick={resetFilters}
               variant="outline"
               size="lg"
-              className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white px-8 py-4 text-lg min-w-[200px]"
+              className="border-yellow-600 text-yellow-400 hover:bg-yellow-900/20 hover:text-yellow-300 px-8 py-4 text-lg min-w-[200px]"
             >
               Reset Filters
             </Button>
@@ -199,16 +199,16 @@ export default function Home() {
         {/* AI Recommendations */}
         {aiRecommendations.length > 0 && (
           <div className="max-w-6xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold text-center mb-8 text-orange-400">Your Perfect Matches</h2>
+            <h2 className="text-3xl font-bold text-center mb-8 text-yellow-400">Your Perfect Matches</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {aiRecommendations.map((rec, index) => (
-                <div key={index} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all duration-200 cursor-pointer"
+                <div key={index} className="bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-yellow-500 transition-all duration-200 cursor-pointer"
                      onClick={() => selectMovieFromRecommendations(rec.movie)}>
                   <div className="flex items-center mb-4">
-                    <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold mr-3">
+                    <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold mr-3">
                       #{rec.rank}
                     </span>
-                    <span className="text-purple-400 text-sm font-medium">
+                    <span className="text-yellow-400 text-sm font-medium">
                       {Math.round(rec.confidence * 100)}% match
                     </span>
                   </div>
@@ -234,8 +234,8 @@ export default function Home() {
                         const parent = target.parentElement;
                         if (parent && !parent.querySelector('.poster-fallback')) {
                           const fallback = document.createElement('div');
-                          fallback.className = 'poster-fallback w-full h-48 bg-gradient-to-br from-purple-900 to-gray-900 rounded-lg mb-4 flex items-center justify-center border border-gray-700';
-                          fallback.innerHTML = `<div class="text-center p-4"><div class="text-white font-bold text-lg">${rec.movie.title}</div><div class="text-gray-300 text-sm">${rec.movie.year}</div><div class="text-purple-400 text-xs mt-2">🎬 ${rec.movie.genre}</div></div>`;
+                          fallback.className = 'poster-fallback w-full h-48 bg-gradient-to-br from-yellow-900/30 to-gray-900 rounded-lg mb-4 flex items-center justify-center border border-yellow-600/30';
+                          fallback.innerHTML = `<div class="text-center p-4"><div class="text-white font-bold text-lg">${rec.movie.title}</div><div class="text-gray-300 text-sm">${rec.movie.year}</div><div class="text-yellow-400 text-xs mt-2">🎬 ${rec.movie.genre}</div></div>`;
                           parent.insertBefore(fallback, target);
                         }
                       }
