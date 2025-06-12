@@ -213,22 +213,30 @@ export default function Home() {
                     </span>
                   </div>
                   
-                  <div className="w-full h-48 rounded-lg mb-4 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                    <div className="text-center p-4">
-                      <div className="text-4xl mb-2">
-                        {rec.movie.genre === 'Action' && '⚡'}
-                        {rec.movie.genre === 'Horror' && '🎭'}
-                        {rec.movie.genre === 'Comedy' && '😄'}
-                        {rec.movie.genre === 'Romance' && '💖'}
-                        {rec.movie.genre === 'Drama' && '🎬'}
-                        {rec.movie.genre === 'Family' && '👨‍👩‍👧‍👦'}
-                        {rec.movie.genre === 'Documentary' && '📚'}
-                        {!['Action', 'Horror', 'Comedy', 'Romance', 'Drama', 'Family', 'Documentary'].includes(rec.movie.genre) && '🎥'}
-                      </div>
-                      <h4 className="text-white font-bold text-sm leading-tight">{rec.movie.title}</h4>
-                      <p className="text-gray-300 text-xs mt-1">{rec.movie.year}</p>
-                    </div>
-                  </div>
+                  <img 
+                    src={rec.movie.image}
+                    alt={`${rec.movie.title} poster`}
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      // Use TMDB's backup image sizes if primary fails
+                      if (target.src.includes('w500')) {
+                        target.src = target.src.replace('w500', 'w342');
+                      } else if (target.src.includes('w342')) {
+                        target.src = target.src.replace('w342', 'w185');
+                      } else {
+                        // Only show movie title if all poster attempts fail
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent && !parent.querySelector('.poster-fallback')) {
+                          const fallback = document.createElement('div');
+                          fallback.className = 'poster-fallback w-full h-48 bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg mb-4 flex items-center justify-center';
+                          fallback.innerHTML = `<div class="text-center p-4"><div class="text-white font-bold">${rec.movie.title}</div><div class="text-gray-300 text-sm">${rec.movie.year}</div></div>`;
+                          parent.insertBefore(fallback, target);
+                        }
+                      }
+                    }}
+                  />
                   
                   <h3 className="text-xl font-bold mb-2 text-white">{rec.movie.title}</h3>
                   

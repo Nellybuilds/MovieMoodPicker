@@ -18,7 +18,7 @@ export const tubiMovies: TubiMovie[] = [
     genre: "Action",
     mood: "Adventurous",
     isKidFriendly: false,
-    image: "https://m.media-amazon.com/images/M/MV5BMTU2NjA1ODgzMF5BMl5BanBnXkFtZTgwMTM2MTI4MjE@._V1_SX300.jpg",
+    image: "https://image.tmdb.org/t/p/w500/fZPSd91yGE9fCcCe6OoQr6E3Bev.jpg",
     description: "An ex-hitman comes out of retirement to track down the gangsters that took everything from him.",
     year: 2014,
     rating: 7.4
@@ -28,7 +28,7 @@ export const tubiMovies: TubiMovie[] = [
     genre: "Action",
     mood: "Adventurous",
     isKidFriendly: false,
-    image: "https://m.media-amazon.com/images/M/MV5BMTQ2MzE2NTk0NF5BMl5BanBnXkFtZTgwOTM3NTk1MjE@._V1_SX300.jpg",
+    image: "https://image.tmdb.org/t/p/w500/2eQfjqlxF2ktNLNzxyd6WQxhJLd.jpg",
     description: "A man believes he has put his mysterious past behind him and has dedicated himself to beginning a new, quiet life.",
     year: 2014,
     rating: 7.2
@@ -38,7 +38,7 @@ export const tubiMovies: TubiMovie[] = [
     genre: "Action",
     mood: "Adventurous",
     isKidFriendly: false,
-    image: "https://m.media-amazon.com/images/M/MV5BMTM4NzQ0OTYyOF5BMl5BanBnXkFtZTcwMDkyNjQyMg@@._V1_SX300.jpg",
+    image: "https://image.tmdb.org/t/p/w500/wrEvDKwjIYgzLY9qxNrfPLgIjPi.jpg",
     description: "A former spy relies on his old skills to save his estranged daughter, who has been forced into the slave trade.",
     year: 2008,
     rating: 7.8
