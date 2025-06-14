@@ -156,8 +156,9 @@ export default function Home() {
                     id="kids-only" 
                     checked={kidsOnly}
                     onCheckedChange={(checked) => setKidsOnly(checked === true)}
+                    className="data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500 data-[state=checked]:text-black border-gray-600"
                   />
-                  <Label htmlFor="kids-only" className="text-lg font-body">
+                  <Label htmlFor="kids-only" className="text-lg font-body cursor-pointer">
                     Kids & Family Only
                   </Label>
                 </div>
