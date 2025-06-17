@@ -43,6 +43,36 @@ export const tubiMovies: TubiMovie[] = [
     year: 2008,
     rating: 7.8
   },
+  {
+    title: "Fast Five",
+    genre: "Action",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/uTxQzaGPFrq0nYwmgNKNh8cEufO.jpg",
+    description: "Dominic Toretto and his crew of street racers plan a massive heist to buy their freedom while in the sights of a powerful Brazilian drug lord.",
+    year: 2011,
+    rating: 7.3
+  },
+  {
+    title: "Guardians of the Galaxy",
+    genre: "Action",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg",
+    description: "A group of intergalactic criminals must pull together to stop a fanatical warrior with plans to purge the universe.",
+    year: 2014,
+    rating: 8.0
+  },
+  {
+    title: "The Mummy",
+    genre: "Action",
+    mood: "Happy",
+    isKidFriendly: false,
+    image: "https://image.tmdb.org/t/p/w500/yhIsVvcUm4eUzOuuBrPkhxDD2oB.jpg",
+    description: "An American serving in the French Foreign Legion on an archaeological dig awakens a mummy which wreaks havoc.",
+    year: 1999,
+    rating: 7.1
+  },
 
   // Horror Movies
   {

@@ -26,18 +26,37 @@ export default function Home() {
     };
     
     console.log('Filtering with:', filters);
-    const availableMovies = getTubiMovies(filters);
-    console.log(`Found ${availableMovies.length} movies matching filters`);
+    let availableMovies = getTubiMovies(filters);
+    console.log(`Found ${availableMovies.length} movies matching all filters`);
 
+    // If no exact matches, try relaxed filtering
     if (availableMovies.length === 0) {
-      console.log('No movies found with filters, picking random from all movies');
-      const randomMovie = getRandomTubiMovie();
-      setSelectedMovie(randomMovie);
-    } else {
-      const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
-      console.log('Selected movie:', randomMovie.title);
-      setSelectedMovie(randomMovie);
+      console.log('No exact matches, trying relaxed filtering...');
+      
+      // Try genre OR mood (not both)
+      if (selectedGenre && selectedMood) {
+        const genreMovies = getTubiMovies({ genre: selectedGenre, kidsOnly });
+        const moodMovies = getTubiMovies({ mood: selectedMood, kidsOnly });
+        availableMovies = [...genreMovies, ...moodMovies];
+        console.log(`Found ${availableMovies.length} movies matching genre OR mood`);
+      }
+      
+      // If still no matches, try just kids filter
+      if (availableMovies.length === 0 && kidsOnly) {
+        availableMovies = getTubiMovies({ kidsOnly: true });
+        console.log(`Found ${availableMovies.length} kid-friendly movies`);
+      }
+      
+      // Last resort: all movies
+      if (availableMovies.length === 0) {
+        console.log('Using all movies as last resort');
+        availableMovies = getTubiMovies();
+      }
     }
+
+    const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+    console.log('Selected movie:', randomMovie.title, `(${randomMovie.genre}, ${randomMovie.mood})`);
+    setSelectedMovie(randomMovie);
     
     setAiInsight(null);
     setAiRecommendations([]);
