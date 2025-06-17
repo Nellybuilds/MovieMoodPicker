@@ -34,7 +34,7 @@ export function GenreSelector({ selectedGenre, onGenreSelect }: GenreSelectorPro
             px-5 py-3 lg:px-6 lg:py-4 border rounded-lg text-base lg:text-lg font-medium 
             transition-all duration-200
             ${selectedGenre === genre
-              ? 'bg-gradient-to-r from-purple-500 to-pink-600 border-purple-500 text-white'
+              ? 'bg-gradient-to-r from-yellow-400 to-amber-500 border-yellow-500 text-black font-bold'
               : 'bg-gray-800 hover:bg-gray-700 border-gray-600 hover:border-gray-500 text-white'
             }
           `}

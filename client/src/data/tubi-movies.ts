@@ -353,16 +353,7 @@ export const tubiMovies: TubiMovie[] = [
     year: 2001,
     rating: 6.5
   },
-  {
-    title: "Dumb and Dumber",
-    genre: "Comedy",
-    mood: "Happy",
-    isKidFriendly: false,
-    image: "https://image.tmdb.org/t/p/w500/dxuWlJsOdDGThFGIx0bLjJDhX3t.jpg",
-    description: "Two best friends set out on a cross-country trip to return a briefcase to its owner.",
-    year: 1994,
-    rating: 7.3
-  },
+
 
   // Additional Drama Movies
   {
@@ -555,16 +546,7 @@ export const tubiMovies: TubiMovie[] = [
     year: 1988,
     rating: 7.6
   },
-  {
-    title: "Dumb and Dumber",
-    genre: "Comedy",
-    mood: "Happy",
-    isKidFriendly: false,
-    image: "https://image.tmdb.org/t/p/w500/oWPKJ9XN4VoSJP1Cx2O5y0h2bgg.jpg",
-    description: "Two dimwitted friends go on a cross-country trip to return a briefcase full of money.",
-    year: 1994,
-    rating: 7.3
-  },
+
   {
     title: "Anchorman",
     genre: "Comedy",
@@ -755,16 +737,7 @@ export const tubiMovies: TubiMovie[] = [
     year: 2014,
     rating: 8.1
   },
-  {
-    title: "Toy Story",
-    genre: "Family",
-    mood: "Happy",
-    isKidFriendly: true,
-    image: "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
-    description: "A cowboy doll is profoundly threatened when a new spaceman action figure supplants him as top toy.",
-    year: 1995,
-    rating: 8.3
-  },
+
   {
     title: "WALL-E",
     genre: "Family",
@@ -777,19 +750,36 @@ export const tubiMovies: TubiMovie[] = [
   }
 ];
 
+// Helper function to remove duplicates and get unique movies
+function getUniqueMovies(): TubiMovie[] {
+  const seen = new Set<string>();
+  return tubiMovies.filter(movie => {
+    const key = `${movie.title.toLowerCase()}-${movie.year}`;
+    if (seen.has(key)) {
+      console.warn(`Duplicate movie found: ${movie.title} (${movie.year})`);
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
 // Helper function to get movies by filters
 export function getTubiMovies(filters?: {
   genre?: string;
   mood?: string;
   kidsOnly?: boolean;
 }): TubiMovie[] {
-  if (!filters) return tubiMovies;
+  const uniqueMovies = getUniqueMovies();
+  
+  if (!filters) return uniqueMovies;
 
-  return tubiMovies.filter(movie => {
-    if (filters.genre && movie.genre.toLowerCase() !== filters.genre.toLowerCase()) {
+  return uniqueMovies.filter(movie => {
+    // Exact string matching to prevent case-sensitivity issues
+    if (filters.genre && movie.genre !== filters.genre) {
       return false;
     }
-    if (filters.mood && movie.mood.toLowerCase() !== filters.mood.toLowerCase()) {
+    if (filters.mood && movie.mood !== filters.mood) {
       return false;
     }
     if (filters.kidsOnly && !movie.isKidFriendly) {
