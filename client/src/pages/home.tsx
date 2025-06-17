@@ -19,17 +19,23 @@ export default function Home() {
   const [isAiLoading, setIsAiLoading] = useState(false);
 
   const pickRandomMovie = () => {
-    const availableMovies = getTubiMovies({
+    const filters = {
       genre: selectedGenre || undefined,
       mood: selectedMood || undefined,
       kidsOnly: kidsOnly
-    });
+    };
+    
+    console.log('Filtering with:', filters);
+    const availableMovies = getTubiMovies(filters);
+    console.log(`Found ${availableMovies.length} movies matching filters`);
 
     if (availableMovies.length === 0) {
+      console.log('No movies found with filters, picking random from all movies');
       const randomMovie = getRandomTubiMovie();
       setSelectedMovie(randomMovie);
     } else {
       const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+      console.log('Selected movie:', randomMovie.title);
       setSelectedMovie(randomMovie);
     }
     

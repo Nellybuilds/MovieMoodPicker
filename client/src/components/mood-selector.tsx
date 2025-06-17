@@ -6,11 +6,11 @@ interface MoodSelectorProps {
 }
 
 const moods = [
-  { value: "happy", label: "😊 Happy", emoji: "😊" },
-  { value: "sad", label: "😢 Sad", emoji: "😢" },
-  { value: "adventurous", label: "🚀 Adventurous", emoji: "🚀" },
-  { value: "scared", label: "😨 Scared", emoji: "😨" },
-  { value: "chill", label: "😎 Chill", emoji: "😎" },
+  { value: "Happy", label: "😊 Happy", emoji: "😊" },
+  { value: "Sad", label: "😢 Sad", emoji: "😢" },
+  { value: "Adventurous", label: "🚀 Adventurous", emoji: "🚀" },
+  { value: "Scared", label: "😨 Scared", emoji: "😨" },
+  { value: "Chill", label: "😎 Chill", emoji: "😎" },
 ];
 
 export function MoodSelector({ selectedMood, onMoodSelect }: MoodSelectorProps) {
@@ -32,7 +32,7 @@ export function MoodSelector({ selectedMood, onMoodSelect }: MoodSelectorProps) 
             px-6 py-4 lg:px-8 lg:py-5 border-2 rounded-xl text-lg lg:text-xl font-medium 
             transition-all duration-200 min-w-[120px] lg:min-w-[140px]
             ${selectedMood === mood.value
-              ? 'bg-gradient-to-r from-purple-500 to-pink-600 border-purple-500 text-white'
+              ? 'bg-gradient-to-r from-yellow-400 to-amber-500 border-yellow-500 text-black font-bold'
               : 'bg-gray-800 hover:bg-gray-700 border-gray-600 hover:border-gray-500 text-white'
             }
           `}
