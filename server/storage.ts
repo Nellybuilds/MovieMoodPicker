@@ -1,12 +1,14 @@
-import { users, type User, type InsertUser } from "@shared/schema";
-
-// modify the interface with any CRUD methods
-// you might need
+import { users, movies, type User, type InsertUser, type Movie, type InsertMovie } from "@shared/schema";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getMovies(filters?: { genre?: string; mood?: string; kidsOnly?: boolean }): Promise<Movie[]>;
+  getMovieById(id: number): Promise<Movie | undefined>;
+  createMovie(movie: InsertMovie): Promise<Movie>;
 }
 
 export class MemStorage implements IStorage {
