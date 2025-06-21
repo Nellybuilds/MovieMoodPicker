@@ -104,6 +104,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoint to view all movies in database
+  app.get('/api/admin/movies', async (req, res) => {
+    try {
+      const allMovies = await storage.getMovies();
+      const moviesByGenre = allMovies.reduce((acc, movie) => {
+        if (!acc[movie.genre]) acc[movie.genre] = [];
+        acc[movie.genre].push(movie);
+        return acc;
+      }, {} as Record<string, any[]>);
+      
+      const summary = {
+        totalMovies: allMovies.length,
+        byGenre: Object.entries(moviesByGenre).map(([genre, movies]) => ({
+          genre,
+          count: movies.length,
+          movies: movies.map(m => ({ id: m.id, title: m.title, mood: m.mood, year: m.year }))
+        }))
+      };
+      
+      res.json(summary);
+    } catch (error) {
+      console.error('Error fetching admin movies:', error);
+      res.status(500).json({ error: 'Failed to fetch movies' });
+    }
+  });
+
   // Original TMDB endpoint for backward compatibility
   app.get('/api/tmdb-movies', async (req, res) => {
     try {
