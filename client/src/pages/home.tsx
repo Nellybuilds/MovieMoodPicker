@@ -5,7 +5,7 @@ import { MovieCard } from "@/components/movie-card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { getTubiMovies, getRandomTubiMovie, type TubiMovie } from "@/data/tubi-movies";
+import { getMovies, getRandomMovie, type Movie } from "@/services/database";
 import { getAIMovieRecommendation, type AIRecommendation } from "@/services/openrouter";
 import { Shuffle, Sparkles } from "lucide-react";
 
@@ -13,12 +13,12 @@ export default function Home() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [kidsOnly, setKidsOnly] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState<TubiMovie | null>(null);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [aiInsight, setAiInsight] = useState<AIRecommendation | null>(null);
   const [aiRecommendations, setAiRecommendations] = useState<any[]>([]);
   const [isAiLoading, setIsAiLoading] = useState(false);
 
-  const pickRandomMovie = () => {
+  const pickRandomMovie = async () => {
     const filters = {
       genre: selectedGenre || undefined,
       mood: selectedMood || undefined,
@@ -26,40 +26,17 @@ export default function Home() {
     };
     
     console.log('Filtering with:', filters);
-    let availableMovies = getTubiMovies(filters);
-    console.log(`Found ${availableMovies.length} movies matching all filters`);
-
-    // If no exact matches, try relaxed filtering
-    if (availableMovies.length === 0) {
-      console.log('No exact matches, trying relaxed filtering...');
-      
-      // Try genre OR mood (not both)
-      if (selectedGenre && selectedMood) {
-        const genreMovies = getTubiMovies({ genre: selectedGenre, kidsOnly });
-        const moodMovies = getTubiMovies({ mood: selectedMood, kidsOnly });
-        availableMovies = [...genreMovies, ...moodMovies];
-        console.log(`Found ${availableMovies.length} movies matching genre OR mood`);
-      }
-      
-      // If still no matches, try just kids filter
-      if (availableMovies.length === 0 && kidsOnly) {
-        availableMovies = getTubiMovies({ kidsOnly: true });
-        console.log(`Found ${availableMovies.length} kid-friendly movies`);
-      }
-      
-      // Last resort: all movies
-      if (availableMovies.length === 0) {
-        console.log('Using all movies as last resort');
-        availableMovies = getTubiMovies();
-      }
-    }
-
-    const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
-    console.log('Selected movie:', randomMovie.title, `(${randomMovie.genre}, ${randomMovie.mood})`);
-    setSelectedMovie(randomMovie);
     
-    setAiInsight(null);
-    setAiRecommendations([]);
+    try {
+      const randomMovie = await getRandomMovie(filters);
+      console.log('Selected movie:', randomMovie.title, `(${randomMovie.genre}, ${randomMovie.mood})`);
+      setSelectedMovie(randomMovie);
+      
+      setAiInsight(null);
+      setAiRecommendations([]);
+    } catch (error) {
+      console.error('Error fetching random movie:', error);
+    }
   };
 
   const pickAIMovie = async () => {
@@ -67,7 +44,7 @@ export default function Home() {
       setIsAiLoading(true);
       setAiInsight(null);
 
-      const availableMovies = getTubiMovies({
+      const availableMovies = await getMovies({
         genre: selectedGenre || undefined,
         mood: selectedMood || undefined,
         kidsOnly: kidsOnly

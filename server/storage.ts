@@ -11,31 +11,63 @@ export interface IStorage {
   createMovie(movie: InsertMovie): Promise<Movie>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  currentId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.currentId = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
+  }
+
+  async getMovies(filters?: { genre?: string; mood?: string; kidsOnly?: boolean }): Promise<Movie[]> {
+    let query = db.select().from(movies);
+    
+    if (filters) {
+      const conditions = [];
+      
+      if (filters.genre) {
+        conditions.push(eq(movies.genre, filters.genre));
+      }
+      
+      if (filters.mood) {
+        conditions.push(eq(movies.mood, filters.mood));
+      }
+      
+      if (filters.kidsOnly) {
+        conditions.push(eq(movies.isKidFriendly, true));
+      }
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions));
+      }
+    }
+    
+    return await query;
+  }
+
+  async getMovieById(id: number): Promise<Movie | undefined> {
+    const [movie] = await db.select().from(movies).where(eq(movies.id, id));
+    return movie || undefined;
+  }
+
+  async createMovie(insertMovie: InsertMovie): Promise<Movie> {
+    const [movie] = await db
+      .insert(movies)
+      .values(insertMovie)
+      .returning();
+    return movie;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

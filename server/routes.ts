@@ -56,7 +56,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   // TMDB API proxy endpoint
+  // Get movies from database with optional filtering
   app.get('/api/movies', async (req, res) => {
+    try {
+      const { genre, mood, kidsOnly } = req.query;
+      
+      const filters: any = {};
+      if (genre && typeof genre === 'string') filters.genre = genre;
+      if (mood && typeof mood === 'string') filters.mood = mood;
+      if (kidsOnly === 'true') filters.kidsOnly = true;
+      
+      const movies = await storage.getMovies(filters);
+      res.json(movies);
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+      res.status(500).json({ error: 'Failed to fetch movies' });
+    }
+  });
+
+  // Get random movie from database
+  app.get('/api/movies/random', async (req, res) => {
+    try {
+      const { genre, mood, kidsOnly } = req.query;
+      
+      const filters: any = {};
+      if (genre && typeof genre === 'string') filters.genre = genre;
+      if (mood && typeof mood === 'string') filters.mood = mood;
+      if (kidsOnly === 'true') filters.kidsOnly = true;
+      
+      const movies = await storage.getMovies(filters);
+      
+      if (movies.length === 0) {
+        // If no matches, get all movies
+        const allMovies = await storage.getMovies();
+        if (allMovies.length === 0) {
+          return res.status(404).json({ error: 'No movies found in database' });
+        }
+        const randomMovie = allMovies[Math.floor(Math.random() * allMovies.length)];
+        return res.json(randomMovie);
+      }
+      
+      const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+      res.json(randomMovie);
+    } catch (error) {
+      console.error('Error fetching random movie:', error);
+      res.status(500).json({ error: 'Failed to fetch random movie' });
+    }
+  });
+
+  // Original TMDB endpoint for backward compatibility
+  app.get('/api/tmdb-movies', async (req, res) => {
     try {
       if (!TMDB_API_KEY) {
         return res.status(500).json({ error: 'TMDB API key not configured' });
