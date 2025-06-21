@@ -31,29 +31,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getMovies(filters?: { genre?: string; mood?: string; kidsOnly?: boolean }): Promise<Movie[]> {
-    let query = db.select().from(movies);
-    
-    if (filters) {
-      const conditions = [];
-      
-      if (filters.genre) {
-        conditions.push(eq(movies.genre, filters.genre));
-      }
-      
-      if (filters.mood) {
-        conditions.push(eq(movies.mood, filters.mood));
-      }
-      
-      if (filters.kidsOnly) {
-        conditions.push(eq(movies.isKidFriendly, true));
-      }
-      
-      if (conditions.length > 0) {
-        query = query.where(and(...conditions));
-      }
+    if (!filters || Object.keys(filters).length === 0) {
+      return await db.select().from(movies);
     }
     
-    return await query;
+    const conditions = [];
+    
+    if (filters.genre) {
+      conditions.push(eq(movies.genre, filters.genre));
+    }
+    
+    if (filters.mood) {
+      conditions.push(eq(movies.mood, filters.mood));
+    }
+    
+    if (filters.kidsOnly) {
+      conditions.push(eq(movies.isKidFriendly, true));
+    }
+    
+    if (conditions.length === 0) {
+      return await db.select().from(movies);
+    }
+    
+    return await db.select().from(movies).where(and(...conditions));
   }
 
   async getMovieById(id: number): Promise<Movie | undefined> {

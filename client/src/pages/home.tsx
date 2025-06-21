@@ -114,7 +114,7 @@ export default function Home() {
     setAiRecommendations([]);
   };
 
-  const selectMovieFromRecommendations = (movie: TubiMovie) => {
+  const selectMovieFromRecommendations = (movie: Movie) => {
     setSelectedMovie(movie);
     setAiRecommendations([]);
     setAiInsight(null);

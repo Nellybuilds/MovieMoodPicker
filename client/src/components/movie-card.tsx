@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import type { TubiMovie } from "@/data/tubi-movies";
+import type { Movie } from "@/services/database";
 import type { AIRecommendation } from "@/services/openrouter";
 
 interface MovieCardProps {
-  movie: TubiMovie;
+  movie: Movie;
   onPickAnother: () => void;
   aiInsight?: AIRecommendation | null;
 }
