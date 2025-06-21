@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MoodSelector } from "@/components/mood-selector";
 import { GenreSelector } from "@/components/genre-selector";
 import { MovieCard } from "@/components/movie-card";
+import { TimeRecommendation } from "@/components/time-recommendation";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -120,6 +121,14 @@ export default function Home() {
     setAiInsight(null);
   };
 
+  const applyTimeRecommendation = (mood: string, genre: string) => {
+    setSelectedMood(mood);
+    setSelectedGenre(genre);
+    setSelectedMovie(null);
+    setAiInsight(null);
+    setAiRecommendations([]);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
       <div className="container mx-auto px-4 py-8">
@@ -133,6 +142,13 @@ export default function Home() {
         </div>
 
         <div className="max-w-4xl mx-auto mb-12">
+          {/* Time-based recommendation banner */}
+          <TimeRecommendation 
+            onApplyRecommendation={applyTimeRecommendation}
+            selectedMood={selectedMood}
+            selectedGenre={selectedGenre}
+          />
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
               <h3 className="text-2xl font-display font-semibold mb-4 text-yellow-400">How are you feeling?</h3>
