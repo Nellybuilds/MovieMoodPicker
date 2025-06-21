@@ -30,6 +30,9 @@
   --tubi-yellow: 255 193 7; /* #FFC107 - Main Brand Yellow */
   --tubi-yellow-dark: 255 160 0; /* #FFA000 - Darker Yellow */
   --tubi-yellow-light: 255 235 59; /* #FFEB3B - Light Yellow */
+  --tubi-purple: 107 33 168; /* #6B21A8 - Deep Purple */
+  --tubi-purple-light: 139 92 246; /* #8B5CF6 - Light Purple */
+  --tubi-purple-dark: 88 28 135; /* #581C87 - Dark Purple */
   --tubi-black: 8 8 8; /* #080808 - Pure Black */
   --tubi-gray: 28 28 28; /* #1C1C1C - Dark Gray */
   --tubi-gray-light: 66 66 66; /* #424242 - Medium Gray */
@@ -86,7 +89,45 @@
 }
 
 @layer components {
-
+  /* Tubi-inspired components */
+  .tubi-gradient-bg {
+    background: linear-gradient(135deg, rgb(var(--tubi-purple-dark)) 0%, rgb(var(--tubi-purple)) 35%, rgb(var(--tubi-purple-light)) 100%);
+  }
+  
+  .tubi-card {
+    background: linear-gradient(145deg, rgba(139, 92, 246, 0.1) 0%, rgba(107, 33, 168, 0.05) 100%);
+    border: 1px solid rgba(var(--tubi-purple-light), 0.2);
+    backdrop-filter: blur(10px);
+  }
+  
+  .tubi-yellow-btn {
+    background: linear-gradient(135deg, rgb(var(--tubi-yellow)) 0%, rgb(var(--tubi-yellow-dark)) 100%);
+    color: rgb(var(--tubi-black));
+    transition: all 0.3s ease;
+  }
+  
+  .tubi-yellow-btn:hover {
+    background: linear-gradient(135deg, rgb(var(--tubi-yellow-light)) 0%, rgb(var(--tubi-yellow)) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(var(--tubi-yellow), 0.3);
+  }
+  
+  .tubi-purple-btn {
+    background: linear-gradient(135deg, rgb(var(--tubi-purple)) 0%, rgb(var(--tubi-purple-light)) 100%);
+    color: white;
+    transition: all 0.3s ease;
+  }
+  
+  .tubi-purple-btn:hover {
+    background: linear-gradient(135deg, rgb(var(--tubi-purple-light)) 0%, rgb(var(--tubi-purple)) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(var(--tubi-purple), 0.4);
+  }
+  
+  .tubi-hover-effect:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(var(--tubi-purple), 0.2);
+  }
   
   .animate-float {
     animation: float 3s ease-in-out infinite;

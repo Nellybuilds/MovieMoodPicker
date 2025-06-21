@@ -12,12 +12,12 @@ interface MovieCardProps {
 
 export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
   return (
-    <div className="max-w-4xl mx-auto">
-      <Card className="bg-gray-900 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
+    <div className="max-w-5xl mx-auto animate-fade-in">
+      <Card className="tubi-card rounded-3xl overflow-hidden shadow-2xl border-2 border-purple-500/30 tubi-hover-effect">
         <CardContent className="p-0">
           <div className="flex flex-col lg:flex-row">
             {/* Movie Poster */}
-            <div className="lg:w-1/3">
+            <div className="lg:w-1/3 relative">
               <img 
                 src={movie.image}
                 alt={`${movie.title} poster`}

@@ -30,10 +30,10 @@ export function MoodSelector({ selectedMood, onMoodSelect }: MoodSelectorProps) 
           onClick={() => handleMoodClick(mood.value)}
           className={`
             px-6 py-4 lg:px-8 lg:py-5 border-2 rounded-xl text-lg lg:text-xl font-medium 
-            transition-all duration-200 min-w-[120px] lg:min-w-[140px]
+            transition-all duration-300 min-w-[120px] lg:min-w-[140px] transform hover:scale-105
             ${selectedMood === mood.value
-              ? 'bg-gradient-to-r from-yellow-400 to-amber-500 border-yellow-500 text-black font-bold'
-              : 'bg-gray-800 hover:bg-gray-700 border-gray-600 hover:border-gray-500 text-white'
+              ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 border-yellow-400 text-black font-bold shadow-lg shadow-yellow-400/30'
+              : 'bg-gradient-to-br from-purple-900/30 to-purple-800/20 hover:from-purple-800/40 hover:to-purple-700/30 border-purple-500/40 hover:border-purple-400/60 text-purple-100 hover:text-white backdrop-blur-sm'
             }
           `}
         >

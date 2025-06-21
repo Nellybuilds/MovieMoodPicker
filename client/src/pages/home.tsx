@@ -130,15 +130,18 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
+    <div className="min-h-screen tubi-gradient-bg text-white">
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-display font-bold mb-4 bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
+        <div className="text-center mb-12 animate-fade-in">
+          <h1 className="text-6xl lg:text-7xl font-display font-bold mb-4 bg-gradient-to-r from-yellow-400 via-yellow-300 to-purple-400 bg-clip-text text-transparent">
             Movies By the Mood
           </h1>
-          <p className="text-xl font-body text-gray-300 max-w-2xl mx-auto">
-            Discover authentic movies from Tubi's catalog based on your current mood and preferences
+          <p className="text-xl lg:text-2xl font-body text-purple-100 max-w-3xl mx-auto leading-relaxed">
+            Discover authentic movies from Tubi's catalog with AI-powered recommendations
           </p>
+          <div className="mt-6 flex justify-center">
+            <div className="h-1 w-32 bg-gradient-to-r from-yellow-400 to-purple-500 rounded-full"></div>
+          </div>
         </div>
 
         <div className="max-w-4xl mx-auto mb-12">
