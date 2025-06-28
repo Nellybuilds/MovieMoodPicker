@@ -13,6 +13,7 @@ const genres = [
   "Drama",
   "Family",
   "Documentary",
+  "Nostalgia",
 ];
 
 export function GenreSelector({ selectedGenre, onGenreSelect }: GenreSelectorProps) {
