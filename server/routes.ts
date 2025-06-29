@@ -365,6 +365,179 @@ Rank the movies 1-3 based on how well they match the user's mood and preferences
     }
   });
 
+  // Natural language mood-based movie recommendation endpoint
+  app.post('/api/mood-recommend', async (req, res) => {
+    try {
+      if (!OPENROUTER_API_KEY) {
+        return res.status(500).json({ error: 'OpenRouter API key not configured' });
+      }
+
+      const { moodText, kidsOnly = false } = req.body;
+
+      if (!moodText) {
+        return res.status(400).json({ error: 'Mood text is required' });
+      }
+
+      // Get all movies from database
+      const allMovies = await storage.getMovies({});
+      
+      if (allMovies.length === 0) {
+        return res.status(404).json({ error: 'No movies available in database' });
+      }
+
+      // Filter for kid-friendly if requested
+      const availableMovies = kidsOnly 
+        ? allMovies.filter(movie => movie.isKidFriendly)
+        : allMovies;
+
+      // Prepare movie data for AI with top-rated movies
+      const topMovies = availableMovies
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 15)
+        .map(movie => ({
+          title: movie.title,
+          overview: movie.description ? movie.description.substring(0, 150) : 'No description available',
+          rating: movie.rating,
+          year: movie.year,
+          genre: movie.genre,
+          mood: movie.mood,
+          isKidFriendly: movie.isKidFriendly
+        }));
+
+      const prompt = `You are an expert movie recommendation AI. A user has described how they're feeling, and you need to recommend the TOP 3 movies from the available list that best match their emotional state and preferences.
+
+User's Mood Description: "${moodText}"
+Kids Only Filter: ${kidsOnly ? 'Yes - only recommend family-friendly movies' : 'No restrictions'}
+
+Available Movies:
+${topMovies.map(movie => `- ${movie.title} (${movie.year}) - Genre: ${movie.genre}, Mood: ${movie.mood}, Rating: ${movie.rating}/10, Kid-Friendly: ${movie.isKidFriendly ? 'Yes' : 'No'}
+  Description: ${movie.overview}`).join('\n\n')}
+
+Analyze the user's mood description and recommend exactly 3 movies that best match their emotional state. Consider:
+1. The emotional tone of their description
+2. Specific keywords about mood, atmosphere, or feelings
+3. Any mentioned genres or preferences
+4. Whether they want something uplifting, cathartic, exciting, etc.
+
+Respond with valid JSON in this exact format:
+{
+  "recommendations": [
+    {
+      "title": "Exact Movie Title From List",
+      "reasoning": "Detailed explanation of why this movie perfectly matches their described mood and feelings",
+      "confidence": 0.95,
+      "rank": 1
+    },
+    {
+      "title": "Second Movie Title",
+      "reasoning": "Why this movie also aligns with their emotional state",
+      "confidence": 0.85,
+      "rank": 2
+    },
+    {
+      "title": "Third Movie Title",
+      "reasoning": "How this movie complements their mood description",
+      "confidence": 0.75,
+      "rank": 3
+    }
+  ],
+  "moodAnalysis": "Brief analysis of the user's described emotional state",
+  "watchContext": "Perfect timing and context for these recommendations"
+}
+
+Only recommend movies from the provided list. Focus on emotional resonance with their mood description.`;
+
+      const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'http://localhost:5000',
+          'X-Title': 'Movies By the Mood - Natural Language'
+        },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          temperature: 0.8,
+          max_tokens: 600
+        })
+      });
+
+      if (!aiResponse.ok) {
+        throw new Error(`OpenRouter API error: ${aiResponse.status}`);
+      }
+
+      const aiData = await aiResponse.json();
+      const aiContent = aiData.choices[0].message.content;
+
+      // Parse AI response
+      let aiRecommendation;
+      try {
+        aiRecommendation = JSON.parse(aiContent);
+      } catch (parseError) {
+        console.error('AI JSON parse error:', parseError);
+        // Fallback to top 3 movies
+        const fallbackMovies = availableMovies.slice(0, 3);
+        aiRecommendation = {
+          recommendations: fallbackMovies.map((movie, index) => ({
+            title: movie.title,
+            reasoning: `This ${movie.genre.toLowerCase()} movie matches your described mood with its ${movie.mood.toLowerCase()} atmosphere`,
+            confidence: 0.8 - (index * 0.1),
+            rank: index + 1
+          })),
+          moodAnalysis: "Based on your description, I've selected movies that should resonate with your current feelings",
+          watchContext: "Perfect for your current emotional state"
+        };
+      }
+
+      // Match AI recommendations with full movie data
+      const recommendedMovies = [];
+      for (const rec of aiRecommendation.recommendations) {
+        const movie = availableMovies.find(m => m.title === rec.title);
+        if (movie && recommendedMovies.length < 3) {
+          recommendedMovies.push({
+            movie: movie,
+            reasoning: rec.reasoning,
+            confidence: rec.confidence,
+            rank: rec.rank
+          });
+        }
+      }
+
+      // Fill with backup movies if needed
+      while (recommendedMovies.length < 3 && recommendedMovies.length < availableMovies.length) {
+        const backupMovie = availableMovies.find(movie => 
+          !recommendedMovies.some(rec => rec.movie.title === movie.title)
+        );
+        if (backupMovie) {
+          recommendedMovies.push({
+            movie: backupMovie,
+            reasoning: `This ${backupMovie.genre.toLowerCase()} movie complements your mood with its ${backupMovie.mood.toLowerCase()} tone`,
+            confidence: 0.6 - (recommendedMovies.length * 0.1),
+            rank: recommendedMovies.length + 1
+          });
+        } else {
+          break;
+        }
+      }
+
+      res.json({
+        recommendations: recommendedMovies,
+        moodAnalysis: aiRecommendation.moodAnalysis,
+        watchContext: aiRecommendation.watchContext
+      });
+
+    } catch (error) {
+      console.error('Error getting mood-based recommendation:', error);
+      res.status(500).json({ error: 'Failed to get mood-based movie recommendation' });
+    }
+  });
+
   // AI movie collection analysis endpoint
   app.post('/api/ai-analyze', async (req, res) => {
     try {

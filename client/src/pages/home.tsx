@@ -3,11 +3,13 @@ import { MoodSelector } from "@/components/mood-selector";
 import { GenreSelector } from "@/components/genre-selector";
 import { MovieCard } from "@/components/movie-card";
 import { TimeRecommendation } from "@/components/time-recommendation";
+import { MoodInput } from "@/components/mood-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { getMovies, getRandomMovie, type Movie } from "@/services/database";
 import { getAIMovieRecommendation, type AIRecommendation } from "@/services/openrouter";
+import { getMoodBasedRecommendations, type MoodRecommendation } from "@/services/mood-recommendations";
 import { Shuffle, Sparkles } from "lucide-react";
 
 export default function Home() {
@@ -18,6 +20,9 @@ export default function Home() {
   const [aiInsight, setAiInsight] = useState<AIRecommendation | null>(null);
   const [aiRecommendations, setAiRecommendations] = useState<any[]>([]);
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [moodRecommendations, setMoodRecommendations] = useState<MoodRecommendation[]>([]);
+  const [moodAnalysis, setMoodAnalysis] = useState<string>("");
+  const [isMoodLoading, setIsMoodLoading] = useState(false);
 
   const pickRandomMovie = async () => {
     const filters = {
@@ -127,6 +132,52 @@ export default function Home() {
     setSelectedMovie(null);
     setAiInsight(null);
     setAiRecommendations([]);
+    setMoodRecommendations([]);
+    setMoodAnalysis("");
+  };
+
+  const handleMoodSubmit = async (moodText: string) => {
+    setIsMoodLoading(true);
+    setSelectedMovie(null);
+    setAiInsight(null);
+    setAiRecommendations([]);
+    setMoodRecommendations([]);
+    setMoodAnalysis("");
+
+    try {
+      const response = await getMoodBasedRecommendations({
+        moodText,
+        kidsOnly
+      });
+
+      setMoodRecommendations(response.recommendations);
+      setMoodAnalysis(response.moodAnalysis);
+      
+      // Automatically select the first recommendation
+      if (response.recommendations.length > 0) {
+        setSelectedMovie(response.recommendations[0].movie);
+        setAiInsight({
+          reasoning: response.recommendations[0].reasoning,
+          confidence: response.recommendations[0].confidence,
+          alternativeGenres: [],
+          watchContext: response.watchContext
+        });
+      }
+    } catch (error) {
+      console.error('Error getting mood recommendations:', error);
+    } finally {
+      setIsMoodLoading(false);
+    }
+  };
+
+  const selectMovieFromMoodRecommendations = (recommendation: MoodRecommendation) => {
+    setSelectedMovie(recommendation.movie);
+    setAiInsight({
+      reasoning: recommendation.reasoning,
+      confidence: recommendation.confidence,
+      alternativeGenres: [],
+      watchContext: moodAnalysis
+    });
   };
 
   return (
@@ -150,6 +201,12 @@ export default function Home() {
             onApplyRecommendation={applyTimeRecommendation}
             selectedMood={selectedMood}
             selectedGenre={selectedGenre}
+          />
+          
+          {/* Natural language mood input */}
+          <MoodInput 
+            onMoodSubmit={handleMoodSubmit}
+            isLoading={isMoodLoading}
           />
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
@@ -217,6 +274,62 @@ export default function Home() {
             </Button>
           </div>
         </div>
+
+        {/* Mood-based Recommendations */}
+        {moodRecommendations.length > 0 && (
+          <div className="max-w-6xl mx-auto mb-12">
+            <h2 className="text-3xl font-display font-bold text-center mb-4 bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-transparent">
+              Perfect Movies for Your Mood
+            </h2>
+            {moodAnalysis && (
+              <p className="text-center text-purple-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+                {moodAnalysis}
+              </p>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {moodRecommendations.map((rec, index) => (
+                <div key={index} 
+                     className="tubi-card p-6 rounded-2xl border-2 border-purple-500/30 hover:border-yellow-400/60 transition-all duration-300 cursor-pointer transform hover:scale-105"
+                     onClick={() => selectMovieFromMoodRecommendations(rec)}>
+                  <div className="flex items-center mb-4">
+                    <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold mr-3">
+                      #{rec.rank}
+                    </span>
+                    <span className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                      {Math.round(rec.confidence * 100)}% match
+                    </span>
+                  </div>
+                  
+                  <img 
+                    src={rec.movie.image}
+                    alt={`${rec.movie.title} poster`}
+                    className="w-full h-48 object-cover rounded-lg mb-4 border border-purple-500/20"
+                    crossOrigin="anonymous"
+                    onError={(e) => {
+                      console.log(`Image failed to load for ${rec.movie.title}: ${rec.movie.image}`);
+                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450/6B21A8/FFC107?text=' + encodeURIComponent(rec.movie.title);
+                    }}
+                  />
+                  
+                  <h3 className="text-xl font-display font-bold text-yellow-400 mb-2">{rec.movie.title}</h3>
+                  <p className="text-purple-100 text-sm mb-3 leading-relaxed">{rec.reasoning}</p>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    <span className="bg-purple-500/20 text-purple-200 px-2 py-1 rounded text-xs border border-purple-500/30">
+                      {rec.movie.genre}
+                    </span>
+                    <span className="bg-yellow-500/20 text-yellow-200 px-2 py-1 rounded text-xs border border-yellow-500/30">
+                      {rec.movie.mood}
+                    </span>
+                    <span className="bg-gray-500/20 text-gray-200 px-2 py-1 rounded text-xs border border-gray-500/30">
+                      {rec.movie.year}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* AI Recommendations */}
         {aiRecommendations.length > 0 && (
