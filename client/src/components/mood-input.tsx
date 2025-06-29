@@ -9,6 +9,50 @@ interface MoodInputProps {
   isLoading: boolean;
 }
 
+function getPersonalizedGreeting(): string {
+  const hour = new Date().getHours();
+  const dayOfWeek = new Date().getDay();
+  const month = new Date().getMonth();
+  const date = new Date().getDate();
+  
+  // Check for holidays
+  const isChristmasTime = month === 11 && date >= 20;
+  const isNewYearTime = (month === 11 && date >= 28) || (month === 0 && date <= 5);
+  const isValentinesDay = month === 1 && date === 14;
+  const isHalloween = month === 9 && date === 31;
+  
+  let greeting = "";
+  let timeContext = "";
+  
+  // Time-based greeting
+  if (hour < 12) {
+    greeting = "Good morning, Shanell!";
+  } else if (hour < 17) {
+    greeting = "Good afternoon, Shanell!";
+  } else {
+    greeting = "Good evening, Shanell!";
+  }
+  
+  // Add holiday context
+  if (isChristmasTime) {
+    timeContext = " Hope you're enjoying the holiday season.";
+  } else if (isNewYearTime) {
+    timeContext = " Happy New Year! What better way to celebrate than with a great movie?";
+  } else if (isValentinesDay) {
+    timeContext = " Perfect day for a romantic movie!";
+  } else if (isHalloween) {
+    timeContext = " Ready for some spooky movie magic?";
+  } else if (dayOfWeek === 5) { // Friday
+    timeContext = " Ready to kick off the weekend with a great movie?";
+  } else if (dayOfWeek === 6 || dayOfWeek === 0) { // Weekend
+    timeContext = " Perfect weekend vibes for movie watching!";
+  } else {
+    timeContext = " Ready to find your next favorite movie?";
+  }
+  
+  return greeting + timeContext;
+}
+
 export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
   const [moodText, setMoodText] = useState("");
 
@@ -40,7 +84,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
             <MessageSquare className="w-6 h-6 text-yellow-400" />
           </div>
           <h3 className="text-2xl font-display font-semibold bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-transparent">
-            Tell me how you're feeling
+            {getPersonalizedGreeting()}
           </h3>
         </div>
         
@@ -78,17 +122,19 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
         </div>
 
         <div className="mt-6">
-          <p className="text-sm text-purple-300 mb-3 font-medium">Try these examples:</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <p className="text-sm text-purple-300 mb-4 font-medium">Try these examples:</p>
+          <div className="space-y-3">
             {exampleMoods.map((example, index) => (
               <Button
                 key={index}
                 variant="outline"
                 onClick={() => setMoodText(example)}
                 disabled={isLoading}
-                className="text-left justify-start h-auto py-2 px-3 bg-yellow-500/10 border-yellow-500/30 text-yellow-100 hover:bg-yellow-500/20 hover:border-yellow-400/50 text-sm leading-relaxed"
+                className="w-full text-left justify-start h-auto py-4 px-4 bg-gradient-to-r from-yellow-500/10 to-purple-500/10 border border-yellow-500/30 hover:border-yellow-400/60 text-purple-100 hover:text-white hover:bg-gradient-to-r hover:from-yellow-500/20 hover:to-purple-500/20 transition-all duration-300 font-body leading-relaxed"
               >
-                "{example}"
+                <span className="text-yellow-400 mr-2">"</span>
+                <span className="flex-1">{example}</span>
+                <span className="text-yellow-400 ml-2">"</span>
               </Button>
             ))}
           </div>
