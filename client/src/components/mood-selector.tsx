@@ -1,4 +1,10 @@
-import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface MoodSelectorProps {
   selectedMood: string | null;
@@ -14,32 +20,25 @@ const moods = [
 ];
 
 export function MoodSelector({ selectedMood, onMoodSelect }: MoodSelectorProps) {
-  const handleMoodClick = (mood: string) => {
-    if (selectedMood === mood) {
-      onMoodSelect(null); // Deselect if already selected
-    } else {
-      onMoodSelect(mood);
-    }
-  };
-
   return (
-    <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
-      {moods.map((mood) => (
-        <Button
-          key={mood.value}
-          onClick={() => handleMoodClick(mood.value)}
-          className={`
-            px-6 py-4 lg:px-8 lg:py-5 border-2 rounded-xl text-lg lg:text-xl font-medium 
-            transition-all duration-300 min-w-[120px] lg:min-w-[140px] transform hover:scale-105
-            ${selectedMood === mood.value
-              ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 border-yellow-400 text-black font-bold shadow-lg shadow-yellow-400/30'
-              : 'bg-gradient-to-br from-purple-900/30 to-purple-800/20 hover:from-purple-800/40 hover:to-purple-700/30 border-purple-500/40 hover:border-purple-400/60 text-purple-100 hover:text-white backdrop-blur-sm'
-            }
-          `}
-        >
-          {mood.label}
-        </Button>
-      ))}
+    <div className="space-y-4">
+      <h3 className="text-xl font-display font-semibold text-yellow-400 text-center">How are you feeling?</h3>
+      <Select value={selectedMood || ""} onValueChange={(value) => onMoodSelect(value || null)}>
+        <SelectTrigger className="w-full bg-gradient-to-br from-purple-900/30 to-purple-800/20 border-2 border-purple-500/40 hover:border-purple-400/60 text-purple-100 hover:text-white backdrop-blur-sm rounded-xl py-4 text-lg">
+          <SelectValue placeholder="Select your mood..." />
+        </SelectTrigger>
+        <SelectContent className="bg-gradient-to-br from-purple-900 to-purple-800 border-2 border-purple-500/40 backdrop-blur-sm">
+          {moods.map(mood => (
+            <SelectItem 
+              key={mood.value} 
+              value={mood.value}
+              className="text-purple-100 hover:bg-purple-500/20 hover:text-white focus:bg-purple-500/20 focus:text-white text-lg py-3"
+            >
+              {mood.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
