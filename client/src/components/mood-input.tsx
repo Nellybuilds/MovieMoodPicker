@@ -69,12 +69,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
     }
   };
 
-  const exampleMoods = [
-    "I'm feeling nostalgic and want something slow and romantic",
-    "I need something uplifting after a tough day",
-    "I want to watch something scary with friends tonight",
-    "Looking for a fun family movie for the weekend"
-  ];
+
 
   return (
     <Card className="tubi-card mb-8 animate-fade-in">
@@ -97,7 +92,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
             value={moodText}
             onChange={(e) => setMoodText(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Example: I'm feeling nostalgic and want something slow and romantic..."
+            placeholder="So, Shanell, how ya feeling?"
             className="min-h-[100px] bg-purple-900/20 border-purple-500/40 text-purple-100 placeholder:text-purple-300 focus:border-yellow-400 focus:ring-yellow-400/20 resize-none"
             disabled={isLoading}
           />
@@ -121,24 +116,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
           </Button>
         </div>
 
-        <div className="mt-6">
-          <p className="text-sm text-purple-300 mb-4 font-medium">Try these examples:</p>
-          <div className="space-y-3">
-            {exampleMoods.map((example, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                onClick={() => setMoodText(example)}
-                disabled={isLoading}
-                className="w-full text-left justify-start h-auto py-4 px-4 bg-gradient-to-r from-yellow-500/10 to-purple-500/10 border border-yellow-500/30 hover:border-yellow-400/60 text-purple-100 hover:text-white hover:bg-gradient-to-r hover:from-yellow-500/20 hover:to-purple-500/20 transition-all duration-300 font-body leading-relaxed"
-              >
-                <span className="text-yellow-400 mr-2">"</span>
-                <span className="flex-1">{example}</span>
-                <span className="text-yellow-400 ml-2">"</span>
-              </Button>
-            ))}
-          </div>
-        </div>
+
       </CardContent>
     </Card>
   );
