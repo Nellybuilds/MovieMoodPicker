@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack movie recommendation application built with React, Express.js, and PostgreSQL. The app helps users discover movies based on their mood and genre preferences, featuring both random selection and AI-powered recommendations using OpenRouter/Anthropic AI.
+This is a streamlined full-stack movie recommendation application built with React, Express.js, and PostgreSQL. The app uses natural language processing to understand user emotions and provides AI-powered movie recommendations through OpenRouter/Anthropic AI. Users simply describe how they feel in plain English, and the AI matches them with perfect movies from a curated database of 242+ films.
 
 ## System Architecture
 
@@ -31,10 +31,11 @@ This is a full-stack movie recommendation application built with React, Express.
 ## Key Components
 
 ### Movie Recommendation System
-- **Mood-based Selection**: 5 mood categories (Happy, Sad, Adventurous, Scared, Chill)
-- **Genre Filtering**: 7 main genres (Action, Comedy, Romance, Horror, Drama, Family, Documentary)
+- **Natural Language Input**: Users describe their feelings in plain English
+- **AI-Powered Mood Analysis**: OpenRouter/Anthropic AI processes user emotions and context
+- **Smart Movie Matching**: Intelligent selection from 242+ curated movies across all genres
 - **Kid-friendly Filter**: Content filtering for family-appropriate movies
-- **AI Recommendations**: Intelligent movie selection using OpenRouter API
+- **Confidence Scoring**: Each recommendation includes AI confidence and detailed reasoning
 
 ### Data Sources
 - **TMDB Integration**: Movie posters, descriptions, ratings, and metadata
@@ -49,14 +50,11 @@ This is a full-stack movie recommendation application built with React, Express.
 
 ## Data Flow
 
-1. **User Selection**: User selects mood, genre, and kid-friendly preferences
-2. **Movie Filtering**: Frontend filters available movies based on criteria
-3. **Random Selection**: Simple random pick from filtered results
-4. **AI Selection**: 
-   - Send filtered movies and preferences to backend
-   - Backend calls OpenRouter API with movie data and user context
-   - AI returns personalized recommendation with reasoning
-   - Frontend displays selected movie with AI insights
+1. **Natural Language Input**: User describes their mood/feelings in a text box (e.g., "I'm feeling nostalgic and want something cozy")
+2. **AI Processing**: Backend sends user text + movie database to OpenRouter/Anthropic AI
+3. **Intelligent Analysis**: AI analyzes user emotion, context, and matches against 242+ movies
+4. **Smart Recommendations**: AI returns top 3 movies with confidence scores and detailed reasoning
+5. **Rich Display**: Frontend shows movie posters, descriptions, match percentages, and AI insights
 
 ## External Dependencies
 
@@ -97,6 +95,7 @@ This is a full-stack movie recommendation application built with React, Express.
 ```
 Changelog:
 - June 14, 2025. Initial setup
+- June 30, 2025. Major refactoring: Removed dropdown-based mood/genre selectors, streamlined to natural language input only
 ```
 
 ## User Preferences

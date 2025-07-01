@@ -1,150 +1,25 @@
 import { useState } from "react";
-import { MoodSelector } from "@/components/mood-selector";
-import { GenreSelector } from "@/components/genre-selector";
 import { MovieCard } from "@/components/movie-card";
-import { TimeRecommendation } from "@/components/time-recommendation";
 import { MoodInput } from "@/components/mood-input";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { getMovies, getRandomMovie, type Movie } from "@/services/database";
-import { getAIMovieRecommendation, type AIRecommendation } from "@/services/openrouter";
 import { getMoodBasedRecommendations, type MoodRecommendation } from "@/services/mood-recommendations";
-import { Shuffle, Sparkles } from "lucide-react";
+import type { Movie } from "@/services/database";
 
 export default function Home() {
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [kidsOnly, setKidsOnly] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [aiInsight, setAiInsight] = useState<AIRecommendation | null>(null);
-  const [aiRecommendations, setAiRecommendations] = useState<any[]>([]);
-  const [isAiLoading, setIsAiLoading] = useState(false);
   const [moodRecommendations, setMoodRecommendations] = useState<MoodRecommendation[]>([]);
   const [moodAnalysis, setMoodAnalysis] = useState<string>("");
   const [isMoodLoading, setIsMoodLoading] = useState(false);
 
-  const pickRandomMovie = async () => {
-    const filters = {
-      genre: selectedGenre || undefined,
-      mood: selectedMood || undefined,
-      kidsOnly: kidsOnly
-    };
-    
-    console.log('Filtering with:', filters);
-    
-    try {
-      const randomMovie = await getRandomMovie(filters);
-      console.log('Selected movie:', randomMovie.title, `(${randomMovie.genre}, ${randomMovie.mood})`);
-      setSelectedMovie(randomMovie);
-      
-      setAiInsight(null);
-      setAiRecommendations([]);
-    } catch (error) {
-      console.error('Error fetching random movie:', error);
-    }
-  };
-
-  const pickAIMovie = async () => {
-    try {
-      setIsAiLoading(true);
-      setAiInsight(null);
-
-      const availableMovies = await getMovies({
-        genre: selectedGenre || undefined,
-        mood: selectedMood || undefined,
-        kidsOnly: kidsOnly
-      });
-
-      if (availableMovies.length === 0) {
-        pickRandomMovie();
-        return;
-      }
-
-      const moviesForAI = availableMovies.map(movie => ({
-        title: movie.title,
-        description: movie.description,
-        rating: movie.rating,
-        genre: movie.genre,
-        mood: movie.mood,
-        isKidFriendly: movie.isKidFriendly,
-        year: movie.year,
-        image: movie.image
-      }));
-
-      const response = await fetch('/api/ai-recommend', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          movies: moviesForAI,
-          mood: selectedMood || '',
-          genre: selectedGenre || '',
-          kidsOnly: kidsOnly,
-          previouslyWatched: [],
-          userPreferences: 'Find me something great based on my mood and genre preferences'
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`AI recommendation failed: ${response.status}`);
-      }
-
-      const result = await response.json();
-      
-      // Use server recommendations directly (they already contain the full movie objects)
-      console.log('Received recommendations:', result.recommendations);
-      console.log('Number of recommendations:', result.recommendations.length);
-      setAiRecommendations(result.recommendations);
-      setSelectedMovie(null);
-      setAiInsight(null);
-    } catch (error) {
-      console.error('AI recommendation failed:', error);
-      pickRandomMovie();
-    } finally {
-      setIsAiLoading(false);
-    }
-  };
-
-  const handlePickAnother = () => {
-    pickRandomMovie();
-  };
-
-  const resetFilters = () => {
-    setSelectedMood(null);
-    setSelectedGenre(null);
-    setKidsOnly(false);
-    setSelectedMovie(null);
-    setAiInsight(null);
-    setAiRecommendations([]);
-  };
-
-  const selectMovieFromRecommendations = (movie: Movie) => {
-    setSelectedMovie(movie);
-    setAiRecommendations([]);
-    setAiInsight(null);
-  };
-
-  const applyTimeRecommendation = (mood: string, genre: string) => {
-    setSelectedMood(mood);
-    setSelectedGenre(genre);
-    setSelectedMovie(null);
-    setAiInsight(null);
-    setAiRecommendations([]);
-    setMoodRecommendations([]);
-    setMoodAnalysis("");
-  };
-
   const handleMoodSubmit = async (moodText: string) => {
-    setIsMoodLoading(true);
-    setSelectedMovie(null);
-    setAiInsight(null);
-    setAiRecommendations([]);
-    setMoodRecommendations([]);
-    setMoodAnalysis("");
-
     try {
+      setIsMoodLoading(true);
+      setSelectedMovie(null);
+      setMoodRecommendations([]);
+      setMoodAnalysis("");
+
       const response = await getMoodBasedRecommendations({
         moodText,
         kidsOnly
@@ -152,17 +27,6 @@ export default function Home() {
 
       setMoodRecommendations(response.recommendations);
       setMoodAnalysis(response.moodAnalysis);
-      
-      // Automatically select the first recommendation
-      if (response.recommendations.length > 0) {
-        setSelectedMovie(response.recommendations[0].movie);
-        setAiInsight({
-          reasoning: response.recommendations[0].reasoning,
-          confidence: response.recommendations[0].confidence,
-          alternativeGenres: [],
-          watchContext: response.watchContext
-        });
-      }
     } catch (error) {
       console.error('Error getting mood recommendations:', error);
     } finally {
@@ -172,255 +36,128 @@ export default function Home() {
 
   const selectMovieFromMoodRecommendations = (recommendation: MoodRecommendation) => {
     setSelectedMovie(recommendation.movie);
-    setAiInsight({
-      reasoning: recommendation.reasoning,
-      confidence: recommendation.confidence,
-      alternativeGenres: [],
-      watchContext: moodAnalysis
-    });
+    setMoodRecommendations([]);
+    setMoodAnalysis("");
+  };
+
+  const resetToHome = () => {
+    setSelectedMovie(null);
+    setMoodRecommendations([]);
+    setMoodAnalysis("");
   };
 
   return (
-    <div className="min-h-screen tubi-gradient-bg text-white">
+    <div className="min-h-screen bg-gradient-to-br from-black via-purple-950 to-black">
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-6xl lg:text-7xl font-display font-bold mb-4 bg-gradient-to-r from-yellow-400 via-yellow-300 to-purple-400 bg-clip-text text-transparent">
-            Movies By the Mood
-          </h1>
-          <p className="text-xl lg:text-2xl font-body text-purple-100 max-w-3xl mx-auto leading-relaxed">
-            Discover authentic movies from Tubi's catalog with AI-powered recommendations
-          </p>
-          <div className="mt-6 flex justify-center">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center">
+              <span className="text-2xl font-bold text-black">🎬</span>
+            </div>
+            <div>
+              <h1 className="text-4xl md:text-6xl font-display font-bold bg-gradient-to-r from-yellow-400 via-yellow-300 to-purple-400 bg-clip-text text-transparent">
+                Movie Mood Match
+              </h1>
+              <p className="text-purple-200 text-lg md:text-xl mt-2 font-body">
+                Tell us how you feel, we'll find your perfect movie
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-center">
             <div className="h-1 w-32 bg-gradient-to-r from-yellow-400 to-purple-500 rounded-full"></div>
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto mb-12">
-          {/* Time-based recommendation banner */}
-          <TimeRecommendation 
-            onApplyRecommendation={applyTimeRecommendation}
-            selectedMood={selectedMood}
-            selectedGenre={selectedGenre}
-          />
-          
-          {/* Natural language mood input */}
-          <MoodInput 
-            onMoodSubmit={handleMoodSubmit}
-            isLoading={isMoodLoading}
-          />
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <h3 className="text-2xl font-display font-semibold mb-4 text-yellow-400">How are you feeling?</h3>
-              <MoodSelector 
-                selectedMood={selectedMood} 
-                onMoodSelect={setSelectedMood} 
-              />
-            </div>
-            
-            <div>
-              <h3 className="text-2xl font-display font-semibold mb-4 text-yellow-400">What genre?</h3>
-              <GenreSelector 
-                selectedGenre={selectedGenre} 
-                onGenreSelect={setSelectedGenre} 
-              />
-            </div>
-            
-            <div>
-              <h3 className="text-2xl font-display font-semibold mb-4 text-yellow-400">Additional Options</h3>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="kids-only" 
-                    checked={kidsOnly}
-                    onCheckedChange={(checked) => setKidsOnly(checked === true)}
-                    className="data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500 data-[state=checked]:text-black border-gray-600"
-                  />
-                  <Label htmlFor="kids-only" className="text-lg font-body cursor-pointer">
-                    Kids & Family Only
-                  </Label>
-                </div>
-                
-                <Button
-                  onClick={pickRandomMovie}
-                  size="sm"
-                  className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-display font-semibold px-6 py-2 text-base w-full shadow-lg hover:shadow-xl transition-all duration-200"
-                >
-                  <Shuffle className="mr-2 h-4 w-4" />
-                  Surprise Me
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              onClick={pickAIMovie}
-              disabled={isAiLoading}
-              size="lg"
-              className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-black font-display font-bold px-8 py-4 text-lg min-w-[200px] shadow-lg hover:shadow-xl transition-all duration-200"
-            >
-              <Sparkles className="mr-2 h-5 w-5" />
-              {isAiLoading ? 'Finding Perfect Match...' : 'Find My Match'}
-            </Button>
-            
-            <Button
-              onClick={resetFilters}
-              variant="outline"
-              size="lg"
-              className="border-yellow-600 text-yellow-400 hover:bg-yellow-900/20 hover:text-yellow-300 font-display px-8 py-4 text-lg min-w-[200px]"
-            >
-              Reset Filters
-            </Button>
+        {/* Kids Only Toggle */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-900/20 to-yellow-900/20 rounded-xl border border-purple-500/30">
+            <Checkbox
+              id="kids-only"
+              checked={kidsOnly}
+              onCheckedChange={(checked) => setKidsOnly(checked as boolean)}
+              className="border-yellow-500 data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500"
+            />
+            <Label htmlFor="kids-only" className="text-yellow-100 font-medium cursor-pointer">
+              Show only family-friendly movies
+            </Label>
           </div>
         </div>
 
-        {/* Mood-based Recommendations */}
-        {moodRecommendations.length > 0 && (
-          <div className="max-w-6xl mx-auto mb-12">
-            <h2 className="text-3xl font-display font-bold text-center mb-4 bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-transparent">
-              Perfect Movies for Your Mood
-            </h2>
-            {moodAnalysis && (
-              <p className="text-center text-purple-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-                {moodAnalysis}
-              </p>
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {moodRecommendations.map((rec, index) => (
-                <div key={index} 
-                     className="tubi-card p-6 rounded-2xl border-2 border-purple-500/30 hover:border-yellow-400/60 transition-all duration-300 cursor-pointer transform hover:scale-105"
-                     onClick={() => selectMovieFromMoodRecommendations(rec)}>
-                  <div className="flex items-center mb-4">
-                    <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold mr-3">
-                      #{rec.rank}
-                    </span>
-                    <span className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      {Math.round(rec.confidence * 100)}% match
-                    </span>
-                  </div>
-                  
-                  <img 
-                    src={rec.movie.image}
-                    alt={`${rec.movie.title} poster`}
-                    className="w-full h-48 object-cover rounded-lg mb-4 border border-purple-500/20"
-                    crossOrigin="anonymous"
-                    onError={(e) => {
-                      console.log(`Image failed to load for ${rec.movie.title}: ${rec.movie.image}`);
-                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450/6B21A8/FFC107?text=' + encodeURIComponent(rec.movie.title);
-                    }}
-                  />
-                  
-                  <h3 className="text-xl font-display font-bold text-yellow-400 mb-2">{rec.movie.title}</h3>
-                  <p className="text-purple-100 text-sm mb-3 leading-relaxed">{rec.reasoning}</p>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    <span className="bg-purple-500/20 text-purple-200 px-2 py-1 rounded text-xs border border-purple-500/30">
-                      {rec.movie.genre}
-                    </span>
-                    <span className="bg-yellow-500/20 text-yellow-200 px-2 py-1 rounded text-xs border border-yellow-500/30">
-                      {rec.movie.mood}
-                    </span>
-                    <span className="bg-gray-500/20 text-gray-200 px-2 py-1 rounded text-xs border border-gray-500/30">
-                      {rec.movie.year}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* AI Recommendations */}
-        {aiRecommendations.length > 0 && (
-          <div className="max-w-6xl mx-auto mb-12">
-            <h2 className="text-3xl font-display font-bold text-center mb-8 text-yellow-400">Your Perfect Matches</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {aiRecommendations.map((rec, index) => (
-                <div key={index} className="bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-yellow-500 transition-all duration-200 cursor-pointer"
-                     onClick={() => selectMovieFromRecommendations(rec.movie)}>
-                  <div className="flex items-center mb-4">
-                    <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold mr-3">
-                      #{rec.rank}
-                    </span>
-                    <span className="text-yellow-400 text-sm font-medium">
-                      {Math.round(rec.confidence * 100)}% match
-                    </span>
-                  </div>
-                  
-                  <img 
-                    src={rec.movie.image}
-                    alt={`${rec.movie.title} poster`}
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                    crossOrigin="anonymous"
-                    onError={(e) => {
-                      console.log(`Image failed to load for ${rec.movie.title}: ${rec.movie.image}`);
-                      const target = e.target as HTMLImageElement;
-                      // Try alternative TMDB image sizes first
-                      if (target.src.includes('w500')) {
-                        target.src = target.src.replace('w500', 'w342');
-                      } else if (target.src.includes('w342')) {
-                        target.src = target.src.replace('w342', 'w185');
-                      } else if (target.src.includes('w185')) {
-                        target.src = target.src.replace('w185', 'original');
-                      } else {
-                        // Create elegant movie poster placeholder
-                        target.style.display = 'none';
-                        const parent = target.parentElement;
-                        if (parent && !parent.querySelector('.poster-fallback')) {
-                          const fallback = document.createElement('div');
-                          fallback.className = 'poster-fallback w-full h-48 bg-gradient-to-br from-yellow-900/30 to-gray-900 rounded-lg mb-4 flex items-center justify-center border border-yellow-600/30';
-                          fallback.innerHTML = `<div class="text-center p-4"><div class="text-white font-bold text-lg">${rec.movie.title}</div><div class="text-gray-300 text-sm">${rec.movie.year}</div><div class="text-yellow-400 text-xs mt-2">🎬 ${rec.movie.genre}</div></div>`;
-                          parent.insertBefore(fallback, target);
-                        }
-                      }
-                    }}
-                  />
-                  
-                  <h3 className="text-xl font-display font-bold mb-2 text-white">{rec.movie.title}</h3>
-                  
-                  <div className="flex gap-2 mb-3">
-                    <span className="px-2 py-1 bg-gray-700 text-white text-xs font-body rounded-full">
-                      {rec.movie.genre}
-                    </span>
-                    <span className="px-2 py-1 bg-gray-700 text-white text-xs font-body rounded-full">
-                      {rec.movie.mood}
-                    </span>
-                  </div>
-                  
-                  <p className="text-gray-300 text-sm font-body leading-relaxed mb-4">
-                    {rec.reasoning}
-                  </p>
-                  
-                  <button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-display font-semibold py-2 px-4 rounded-lg transition-all duration-200">
-                    Watch This
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Single Movie Result */}
-        {selectedMovie && aiRecommendations.length === 0 && (
+        {/* Main Content */}
+        {selectedMovie ? (
           <div className="max-w-4xl mx-auto">
             <MovieCard 
               movie={selectedMovie} 
-              onPickAnother={handlePickAnother}
-              aiInsight={aiInsight}
+              onPickAnother={resetToHome}
             />
           </div>
-        )}
+        ) : (
+          <>
+            {/* Mood Input */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <MoodInput 
+                onMoodSubmit={handleMoodSubmit}
+                isLoading={isMoodLoading}
+              />
+            </div>
 
-        {/* No Selection State */}
-        {!selectedMovie && aiRecommendations.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-6">🎬</div>
-            <h2 className="text-3xl font-bold mb-4 text-gray-300">Ready to discover your next movie?</h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Choose your mood and genre preferences above, then let us find the perfect movie from Tubi's authentic catalog.
-            </p>
-          </div>
+            {/* Mood-based Recommendations */}
+            {moodRecommendations.length > 0 && (
+              <div className="max-w-6xl mx-auto mb-12">
+                <h2 className="text-3xl font-display font-bold text-center mb-4 bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-transparent">
+                  Perfect Movies for Your Mood
+                </h2>
+                {moodAnalysis && (
+                  <p className="text-center text-purple-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+                    {moodAnalysis}
+                  </p>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {moodRecommendations.map((rec, index) => (
+                    <div key={index} 
+                         className="tubi-card p-6 rounded-2xl border-2 border-purple-500/30 hover:border-yellow-400/60 transition-all duration-300 cursor-pointer transform hover:scale-105"
+                         onClick={() => selectMovieFromMoodRecommendations(rec)}>
+                      <div className="flex items-center mb-4">
+                        <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold mr-3">
+                          #{rec.rank}
+                        </span>
+                        <span className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                          {Math.round(rec.confidence * 100)}% match
+                        </span>
+                      </div>
+                      
+                      <img 
+                        src={rec.movie.image}
+                        alt={`${rec.movie.title} poster`}
+                        className="w-full h-48 object-cover rounded-lg mb-4 border border-purple-500/20"
+                        crossOrigin="anonymous"
+                        onError={(e) => {
+                          console.log(`Image failed to load for ${rec.movie.title}: ${rec.movie.image}`);
+                          (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450/6B21A8/FFC107?text=' + encodeURIComponent(rec.movie.title);
+                        }}
+                      />
+                      
+                      <h3 className="text-xl font-display font-bold text-yellow-400 mb-2">{rec.movie.title}</h3>
+                      <p className="text-purple-100 text-sm mb-3 leading-relaxed">{rec.reasoning}</p>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-purple-500/20 text-purple-200 px-2 py-1 rounded text-xs border border-purple-500/30">
+                          {rec.movie.genre}
+                        </span>
+                        <span className="bg-yellow-500/20 text-yellow-200 px-2 py-1 rounded text-xs border border-yellow-500/30">
+                          {rec.movie.mood}
+                        </span>
+                        <span className="bg-gray-500/20 text-gray-200 px-2 py-1 rounded text-xs border border-gray-500/30">
+                          {rec.movie.year}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
