@@ -262,7 +262,7 @@ Rank the movies 1-3 based on how well they match the user's mood and preferences
           'X-Title': 'Movies By the Mood'
         },
         body: JSON.stringify({
-          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          model: 'qwen/qwen3-8b:free',
           messages: [
             {
               role: 'user',
@@ -456,7 +456,7 @@ Only recommend movies from the provided list. Focus on emotional resonance with 
           'X-Title': 'Movies By the Mood - Natural Language'
         },
         body: JSON.stringify({
-          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          model: 'qwen/qwen3-8b:free',
           messages: [
             {
               role: 'user',
@@ -578,7 +578,7 @@ Respond with JSON in this format:
           'X-Title': 'Movies By the Mood'
         },
         body: JSON.stringify({
-          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          model: 'qwen/qwen3-8b:free',
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.5,
           max_tokens: 300
