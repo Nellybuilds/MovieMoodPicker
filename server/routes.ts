@@ -262,7 +262,7 @@ Rank the movies 1-3 based on how well they match the user's mood and preferences
           'X-Title': 'Movies By the Mood'
         },
         body: JSON.stringify({
-          model: 'qwen/qwen3-8b:free',
+          model: 'mistralai/mistral-small-3.2-24b-instruct:free',
           messages: [
             {
               role: 'user',
@@ -404,51 +404,24 @@ Rank the movies 1-3 based on how well they match the user's mood and preferences
           isKidFriendly: movie.isKidFriendly
         }));
 
-      const prompt = `You are an expert movie recommendation AI. Analyze the user's mood and recommend 3 movies that perfectly match their emotional state.
+      const prompt = `Analyze this mood and recommend 3 movies from the list:
 
-USER'S MOOD: "${moodText}"
-FAMILY FILTER: ${kidsOnly ? 'Only family-friendly movies' : 'All movies allowed'}
+Mood: "${moodText}"
+${kidsOnly ? 'Filter: Family-friendly only' : ''}
 
-AVAILABLE MOVIES:
-${topMovies.map(movie => `${movie.title} (${movie.year}) | Genre: ${movie.genre} | Mood: ${movie.mood} | Rating: ${movie.rating}/10 | Family: ${movie.isKidFriendly ? 'Yes' : 'No'}`).join('\n')}
+Movies:
+${topMovies.map(movie => `${movie.title} | ${movie.genre} | ${movie.mood}`).join('\n')}
 
-MOOD ANALYSIS GUIDELINES:
-- If they say "nostalgic" or "cozy" → recommend Heartwarming/Feel-Good movies
-- If they say "sad" or "down" → recommend Uplifting/Inspirational movies  
-- If they say "excited" or "energetic" → recommend Action/Adventure movies
-- If they say "stressed" or "anxious" → recommend Chill/Relaxing movies
-- If they say "romantic" or "lovey" → recommend Romance movies
-- If they say "scared" or "thrills" → recommend Horror/Thriller movies
-- If they say "funny" or "laugh" → recommend Comedy movies
-- If they say "deep" or "think" → recommend Drama movies
-
-RESPOND WITH VALID JSON ONLY:
+Return valid JSON:
 {
   "recommendations": [
-    {
-      "title": "Movie Title 1",
-      "reasoning": "Why this movie matches their mood perfectly",
-      "confidence": 0.95,
-      "rank": 1
-    },
-    {
-      "title": "Movie Title 2", 
-      "reasoning": "How this movie fits their emotional state",
-      "confidence": 0.85,
-      "rank": 2
-    },
-    {
-      "title": "Movie Title 3",
-      "reasoning": "Why this movie complements their feelings",
-      "confidence": 0.75,
-      "rank": 3
-    }
+    {"title": "Exact Title", "reasoning": "Brief match explanation", "confidence": 0.9, "rank": 1},
+    {"title": "Exact Title", "reasoning": "Brief match explanation", "confidence": 0.8, "rank": 2},
+    {"title": "Exact Title", "reasoning": "Brief match explanation", "confidence": 0.7, "rank": 3}
   ],
-  "moodAnalysis": "Brief analysis of their emotional state",
-  "watchContext": "Perfect timing context for these picks"
-}
-
-CRITICAL: Only use exact movie titles from the list above. Return only valid JSON with no extra text.`;
+  "moodAnalysis": "Brief mood summary",
+  "watchContext": "Context note"
+}`;
 
       const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -459,7 +432,7 @@ CRITICAL: Only use exact movie titles from the list above. Return only valid JSO
           'X-Title': 'Movies By the Mood - Natural Language'
         },
         body: JSON.stringify({
-          model: 'qwen/qwen3-8b:free',
+          model: 'mistralai/mistral-small-3.2-24b-instruct:free',
           messages: [
             {
               role: 'user',
@@ -481,8 +454,17 @@ CRITICAL: Only use exact movie titles from the list above. Return only valid JSO
       // Parse AI response with better error handling
       let aiRecommendation;
       try {
-        // Clean the response - remove any markdown formatting
-        const cleanedContent = aiContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        // Clean the response - remove any markdown formatting and extra text
+        let cleanedContent = aiContent.trim();
+        
+        // Find JSON in the response
+        const jsonMatch = cleanedContent.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          cleanedContent = jsonMatch[0];
+        } else {
+          // Remove markdown blocks
+          cleanedContent = cleanedContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        }
         aiRecommendation = JSON.parse(cleanedContent);
       } catch (parseError) {
         console.error('AI JSON parse error:', parseError);
@@ -630,7 +612,7 @@ Respond with JSON in this format:
           'X-Title': 'Movies By the Mood'
         },
         body: JSON.stringify({
-          model: 'qwen/qwen3-8b:free',
+          model: 'mistralai/mistral-small-3.2-24b-instruct:free',
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.5,
           max_tokens: 300
