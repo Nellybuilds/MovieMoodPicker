@@ -60,7 +60,7 @@ export default function Home() {
                 Movie Mood Match
               </h1>
               <p className="text-purple-200 text-lg md:text-xl mt-2 font-body">
-                Tell us how you feel, we'll find your perfect movie
+                Tell us how you feel, we promise not to judge 🤝
               </p>
             </div>
           </div>

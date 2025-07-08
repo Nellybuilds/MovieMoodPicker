@@ -33,21 +33,21 @@ function getPersonalizedGreeting(): string {
     greeting = "Good evening, Shanell!";
   }
   
-  // Add holiday context
+  // Add holiday context with more engaging language
   if (isChristmasTime) {
-    timeContext = " Hope you're enjoying the holiday season.";
+    timeContext = " The holidays got you feeling cozy? Let's find something magical to watch! ✨";
   } else if (isNewYearTime) {
-    timeContext = " Happy New Year! What better way to celebrate than with a great movie?";
+    timeContext = " New year, new movies to discover! What's your vibe tonight? 🎉";
   } else if (isValentinesDay) {
-    timeContext = " Perfect day for a romantic movie!";
+    timeContext = " Love is in the air! Feeling romantic or need something to lift your spirits? 💕";
   } else if (isHalloween) {
-    timeContext = " Ready for some spooky movie magic?";
+    timeContext = " Spooky season vibes! Ready for thrills or keeping it light? 🎃";
   } else if (dayOfWeek === 5) { // Friday
-    timeContext = " Ready to kick off the weekend with a great movie?";
+    timeContext = " Friday night freedom! What's calling to you right now? 🍿";
   } else if (dayOfWeek === 6 || dayOfWeek === 0) { // Weekend
-    timeContext = " Perfect weekend vibes for movie watching!";
+    timeContext = " Weekend mode activated! What kind of escape are you craving? 🌟";
   } else {
-    timeContext = " Ready to find your next favorite movie?";
+    timeContext = " What's your heart telling you it needs tonight? 💫";
   }
   
   return greeting + timeContext;
@@ -92,7 +92,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
             value={moodText}
             onChange={(e) => setMoodText(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="So, Shanell, how ya feeling?"
+            placeholder="I'm feeling nostalgic and want something cozy and heartwarming..."
             className="min-h-[100px] bg-purple-900/20 border-purple-500/40 text-purple-100 placeholder:text-purple-300 focus:border-yellow-400 focus:ring-yellow-400/20 resize-none"
             disabled={isLoading}
           />
