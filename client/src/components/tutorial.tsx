@@ -9,32 +9,32 @@ export function Tutorial() {
 
   const steps = [
     {
-      title: "Welcome to Movie Mood Match! 🎬",
-      content: "Let me show you how to find your perfect movie using AI. Click 'Next' to start the tour!",
+      title: "Hey there, movie lover! 🎬",
+      content: "Ready to find your next obsession? I'm your personal movie matchmaker, and I promise I won't judge your weird moods. Let's do this!",
       highlight: null,
       position: "center"
     },
     {
-      title: "Step 1: Describe Your Mood",
-      content: "Type how you're feeling in this text box. Be specific about your emotions and what kind of story you want to watch.",
+      title: "Step 1: Spill Your Feelings 💭",
+      content: "Right here! Tell me EXACTLY how you're feeling. Are you \"dead inside but need hope\"? \"Craving chaos but make it fun\"? The weirder, the better - I live for this stuff!",
       highlight: "mood-input",
       position: "bottom"
     },
     {
-      title: "Step 2: Family-Friendly Filter",
-      content: "Check this box if you want only family-appropriate movies in your recommendations.",
+      title: "Step 2: The Family-Friendly Switch 👨‍👩‍👧‍👦",
+      content: "Got tiny humans around? Toggle this bad boy ON and I'll keep things G-rated. No awkward moments during family movie night!",
       highlight: "kids-toggle",
       position: "top"
     },
     {
-      title: "Step 3: Get AI Recommendations",
-      content: "Click this button to get 3 personalized movie recommendations with confidence scores and detailed reasoning.",
+      title: "Step 3: The Magic Button ✨",
+      content: "This beauty right here? It's where the magic happens. One click and I'll serve you 3 perfectly matched movies with all the juicy details about why they're perfect for you!",
       highlight: "submit-button",
       position: "top"
     },
     {
-      title: "You're All Set! 🍿",
-      content: "Now you know how to use Movie Mood Match. Try describing your mood and let our AI find your perfect movie!",
+      title: "You're officially a pro! 🍿",
+      content: "That's it! You're now ready to discover movies that'll hit different. Go ahead, tell me about that oddly specific mood you're in - I'm here for ALL of it!",
       highlight: null,
       position: "center"
     }
@@ -105,8 +105,8 @@ export function Tutorial() {
       {/* Overlay and highlight */}
       {isOpen && (
         <div className="fixed inset-0 z-50">
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/70" />
+          {/* Light overlay */}
+          <div className="absolute inset-0 bg-black/30" />
           
           {/* Highlight specific element */}
           {currentStepData.highlight && (
@@ -148,6 +148,7 @@ export function Tutorial() {
                     variant="ghost"
                     size="sm"
                     className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-400/10"
+                    title="Skip the tour (but why would you?)"
                   >
                     <X className="w-4 h-4" />
                   </Button>
@@ -189,7 +190,7 @@ export function Tutorial() {
                         size="sm"
                         className="border-purple-400 text-purple-200 hover:bg-purple-400/20"
                       >
-                        Back
+                        Oops, go back
                       </Button>
                     )}
                     <Button
@@ -197,7 +198,7 @@ export function Tutorial() {
                       className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black font-semibold"
                       size="sm"
                     >
-                      {currentStep === steps.length - 1 ? "Finish" : "Next"}
+                      {currentStep === steps.length - 1 ? "Let's do this! 🚀" : "Show me more! 👀"}
                     </Button>
                   </div>
                 </div>
