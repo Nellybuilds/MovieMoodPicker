@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MovieCard } from "@/components/movie-card";
 import { MoodInput } from "@/components/mood-input";
+import { Tutorial } from "@/components/tutorial";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { getMoodBasedRecommendations, type MoodRecommendation } from "@/services/mood-recommendations";
@@ -160,6 +161,9 @@ export default function Home() {
           </>
         )}
       </div>
+
+      {/* Tutorial */}
+      <Tutorial />
     </div>
   );
 }
