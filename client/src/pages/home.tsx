@@ -90,7 +90,7 @@ export default function Home() {
 
             {/* Kids Only Toggle */}
             <div className="max-w-4xl mx-auto mb-12">
-              <div className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-900/20 to-yellow-900/20 rounded-xl border border-purple-500/30">
+              <div id="kids-toggle" className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-900/20 to-yellow-900/20 rounded-xl border border-purple-500/30">
                 <Checkbox
                   id="kids-only"
                   checked={kidsOnly}

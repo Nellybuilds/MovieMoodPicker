@@ -1,10 +1,64 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { X, HelpCircle } from "lucide-react";
+import { X, HelpCircle, ArrowDown, ArrowLeft } from "lucide-react";
 
 export function Tutorial() {
   const [isOpen, setIsOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const steps = [
+    {
+      title: "Welcome to Movie Mood Match! 🎬",
+      content: "Let me show you how to find your perfect movie using AI. Click 'Next' to start the tour!",
+      highlight: null,
+      position: "center"
+    },
+    {
+      title: "Step 1: Describe Your Mood",
+      content: "Type how you're feeling in this text box. Be specific about your emotions and what kind of story you want to watch.",
+      highlight: "mood-input",
+      position: "bottom"
+    },
+    {
+      title: "Step 2: Family-Friendly Filter",
+      content: "Check this box if you want only family-appropriate movies in your recommendations.",
+      highlight: "kids-toggle",
+      position: "top"
+    },
+    {
+      title: "Step 3: Get AI Recommendations",
+      content: "Click this button to get 3 personalized movie recommendations with confidence scores and detailed reasoning.",
+      highlight: "submit-button",
+      position: "top"
+    },
+    {
+      title: "You're All Set! 🍿",
+      content: "Now you know how to use Movie Mood Match. Try describing your mood and let our AI find your perfect movie!",
+      highlight: null,
+      position: "center"
+    }
+  ];
+
+  const nextStep = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setIsOpen(false);
+      setCurrentStep(0);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setCurrentStep(0);
+  };
 
   if (!isOpen) {
     return (
@@ -19,81 +73,139 @@ export function Tutorial() {
     );
   }
 
+  const currentStepData = steps[currentStep];
+  
+  const getCalloutPosition = () => {
+    if (!currentStepData.highlight) return {};
+    
+    const element = document.getElementById(currentStepData.highlight);
+    if (!element) return {};
+    
+    const rect = element.getBoundingClientRect();
+    const position = currentStepData.position;
+    
+    if (position === "bottom") {
+      return {
+        top: rect.bottom + 20,
+        left: rect.left + rect.width / 2,
+        transform: "translateX(-50%)"
+      };
+    } else if (position === "top") {
+      return {
+        top: rect.top - 20,
+        left: rect.left + rect.width / 2,
+        transform: "translateX(-50%) translateY(-100%)"
+      };
+    }
+    return {};
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="max-w-2xl w-full bg-gradient-to-br from-purple-900 to-purple-800 border-2 border-yellow-400/50">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-display font-bold text-yellow-400">
-              How to Find Your Perfect Movie 🎬
-            </h2>
-            <Button
-              onClick={() => setIsOpen(false)}
-              variant="ghost"
-              size="sm"
-              className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-400/10"
-            >
-              <X className="w-5 h-5" />
-            </Button>
-          </div>
-
-          <div className="space-y-4 text-purple-100">
-            <div className="flex items-start gap-3">
-              <span className="bg-yellow-400 text-black font-bold w-8 h-8 rounded-full flex items-center justify-center text-lg flex-shrink-0">
-                1
-              </span>
-              <div>
-                <h3 className="font-semibold text-yellow-300 mb-1">Describe Your Mood</h3>
-                <p className="text-sm leading-relaxed">
-                  Tell us how you're feeling in your own words. Be specific about your emotions, the vibe you want, or what kind of story appeals to you right now.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <span className="bg-yellow-400 text-black font-bold w-8 h-8 rounded-full flex items-center justify-center text-lg flex-shrink-0">
-                2
-              </span>
-              <div>
-                <h3 className="font-semibold text-yellow-300 mb-1">Examples That Work Great</h3>
-                <div className="text-sm space-y-1">
-                  <p>• "I'm feeling nostalgic and want something cozy"</p>
-                  <p>• "Need something uplifting after a tough day"</p>
-                  <p>• "Want thrills but not too scary"</p>
-                  <p>• "Looking for a fun family adventure"</p>
+    <>
+      {/* Overlay and highlight */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50">
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/70" />
+          
+          {/* Highlight specific element */}
+          {currentStepData.highlight && (
+            <div
+              className="absolute border-4 border-yellow-400 rounded-lg shadow-lg pointer-events-none"
+              style={{
+                ...(() => {
+                  const element = document.getElementById(currentStepData.highlight);
+                  if (!element) return {};
+                  const rect = element.getBoundingClientRect();
+                  return {
+                    top: rect.top - 8,
+                    left: rect.left - 8,
+                    width: rect.width + 16,
+                    height: rect.height + 16,
+                  };
+                })()
+              }}
+            />
+          )}
+          
+          {/* Tutorial card */}
+          <div
+            className={`absolute ${
+              currentStepData.position === "center" 
+                ? "top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
+                : ""
+            }`}
+            style={currentStepData.position !== "center" ? getCalloutPosition() : {}}
+          >
+            <Card className="max-w-md bg-gradient-to-br from-purple-900 to-purple-800 border-2 border-yellow-400/50 shadow-xl">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-display font-bold text-yellow-400">
+                    {currentStepData.title}
+                  </h3>
+                  <Button
+                    onClick={closeModal}
+                    variant="ghost"
+                    size="sm"
+                    className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-400/10"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
                 </div>
-              </div>
-            </div>
 
-            <div className="flex items-start gap-3">
-              <span className="bg-yellow-400 text-black font-bold w-8 h-8 rounded-full flex items-center justify-center text-lg flex-shrink-0">
-                3
-              </span>
-              <div>
-                <h3 className="font-semibold text-yellow-300 mb-1">Get Personalized Picks</h3>
-                <p className="text-sm leading-relaxed">
-                  Our AI analyzes your mood and matches you with 3 perfect movies from our collection of 242+ films, complete with confidence scores and reasoning.
+                <p className="text-purple-100 text-sm leading-relaxed mb-6">
+                  {currentStepData.content}
                 </p>
-              </div>
-            </div>
 
-            <div className="bg-purple-800/50 rounded-lg p-4 mt-6">
-              <p className="text-sm text-center text-purple-200">
-                <span className="text-yellow-400 font-medium">Pro tip:</span> The more specific you are about your feelings and preferences, the better our recommendations will be!
-              </p>
-            </div>
-          </div>
+                {/* Arrow pointing to highlighted element */}
+                {currentStepData.highlight && (
+                  <div className="absolute">
+                    {currentStepData.position === "bottom" && (
+                      <ArrowDown className="w-6 h-6 text-yellow-400 -top-8 left-1/2 transform -translate-x-1/2" style={{ position: 'absolute' }} />
+                    )}
+                    {currentStepData.position === "top" && (
+                      <ArrowDown className="w-6 h-6 text-yellow-400 -bottom-8 left-1/2 transform -translate-x-1/2 rotate-180" style={{ position: 'absolute' }} />
+                    )}
+                  </div>
+                )}
 
-          <div className="flex justify-center mt-6">
-            <Button
-              onClick={() => setIsOpen(false)}
-              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold px-8 py-2"
-            >
-              Got It! Let's Find Movies 🍿
-            </Button>
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2">
+                    {steps.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full ${
+                          index === currentStep ? "bg-yellow-400" : "bg-purple-400/50"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    {currentStep > 0 && (
+                      <Button
+                        onClick={prevStep}
+                        variant="outline"
+                        size="sm"
+                        className="border-purple-400 text-purple-200 hover:bg-purple-400/20"
+                      >
+                        Back
+                      </Button>
+                    )}
+                    <Button
+                      onClick={nextStep}
+                      className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black font-semibold"
+                      size="sm"
+                    >
+                      {currentStep === steps.length - 1 ? "Finish" : "Next"}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      )}
+    </>
   );
 }

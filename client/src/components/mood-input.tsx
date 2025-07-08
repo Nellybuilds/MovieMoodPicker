@@ -89,6 +89,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
 
         <div className="space-y-4">
           <Textarea
+            id="mood-input"
             value={moodText}
             onChange={(e) => setMoodText(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -98,6 +99,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
           />
 
           <Button
+            id="submit-button"
             onClick={handleSubmit}
             disabled={!moodText.trim() || isLoading}
             className="tubi-purple-btn w-full py-3 font-display font-semibold text-lg"
