@@ -492,27 +492,49 @@ CRITICAL: Only use exact movie titles from the list above. Return only valid JSO
         const moodLower = moodText.toLowerCase();
         let selectedMovies = [];
         
-        // Try to match mood to movies
-        if (moodLower.includes('nostalgic') || moodLower.includes('cozy') || moodLower.includes('heartwarming')) {
-          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase().includes('heartwarming') || m.mood.toLowerCase().includes('feel-good'));
-        } else if (moodLower.includes('sad') || moodLower.includes('down') || moodLower.includes('upset')) {
-          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase().includes('uplifting') || m.mood.toLowerCase().includes('inspirational'));
-        } else if (moodLower.includes('excited') || moodLower.includes('energetic') || moodLower.includes('action')) {
-          selectedMovies = availableMovies.filter(m => m.genre.toLowerCase().includes('action') || m.mood.toLowerCase().includes('thrilling'));
-        } else if (moodLower.includes('romantic') || moodLower.includes('love')) {
-          selectedMovies = availableMovies.filter(m => m.genre.toLowerCase().includes('romance') || m.mood.toLowerCase().includes('romantic'));
-        } else if (moodLower.includes('funny') || moodLower.includes('laugh') || moodLower.includes('comedy')) {
-          selectedMovies = availableMovies.filter(m => m.genre.toLowerCase().includes('comedy') || m.mood.toLowerCase().includes('funny'));
-        } else if (moodLower.includes('chill') || moodLower.includes('relaxing') || moodLower.includes('calm')) {
-          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase().includes('chill') || m.mood.toLowerCase().includes('relaxing'));
+        // Try to match mood to movies using actual database moods
+        if (moodLower.includes('happy') || moodLower.includes('upbeat') || moodLower.includes('cheerful') || moodLower.includes('positive') || moodLower.includes('smile') || moodLower.includes('joy')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase() === 'happy').sort(() => Math.random() - 0.5);
+        } else if (moodLower.includes('adventure') || moodLower.includes('excited') || moodLower.includes('action') || moodLower.includes('thrilling') || moodLower.includes('adrenaline') || moodLower.includes('epic')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase() === 'adventurous').sort(() => Math.random() - 0.5);
+        } else if (moodLower.includes('scared') || moodLower.includes('scary') || moodLower.includes('horror') || moodLower.includes('terrified') || moodLower.includes('suspense') || moodLower.includes('chills')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase() === 'scared').sort(() => Math.random() - 0.5);
+        } else if (moodLower.includes('romantic') || moodLower.includes('love') || moodLower.includes('romance') || moodLower.includes('sweet') || moodLower.includes('tender')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase() === 'romance').sort(() => Math.random() - 0.5);
+        } else if (moodLower.includes('sad') || moodLower.includes('emotional') || moodLower.includes('cry') || moodLower.includes('touching') || moodLower.includes('moving') || moodLower.includes('deep')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase() === 'sad').sort(() => Math.random() - 0.5);
+        } else if (moodLower.includes('chill') || moodLower.includes('relaxing') || moodLower.includes('calm') || moodLower.includes('peaceful')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase() === 'chill').sort(() => Math.random() - 0.5);
         }
         
-        // If no specific matches, use top-rated movies
+        // If no specific matches, use diverse selection from different moods
         if (selectedMovies.length === 0) {
-          selectedMovies = availableMovies.sort((a, b) => b.rating - a.rating);
+          const moodGroups = {
+            happy: availableMovies.filter(m => m.mood.toLowerCase() === 'happy'),
+            adventurous: availableMovies.filter(m => m.mood.toLowerCase() === 'adventurous'),
+            scared: availableMovies.filter(m => m.mood.toLowerCase() === 'scared')
+          };
+          
+          // Pick one from each mood group for variety
+          selectedMovies = [
+            moodGroups.happy.sort((a, b) => b.rating - a.rating)[0],
+            moodGroups.adventurous.sort((a, b) => b.rating - a.rating)[0],
+            moodGroups.scared.sort((a, b) => b.rating - a.rating)[0]
+          ].filter(Boolean);
         }
         
-        const fallbackMovies = selectedMovies.slice(0, 3);
+        // Ensure we have 3 different movies by adding variety if needed
+        let fallbackMovies = selectedMovies.slice(0, 3);
+        
+        // If we need more movies, add from different moods
+        if (fallbackMovies.length < 3) {
+          const usedIds = fallbackMovies.map(m => m.id);
+          const remainingMovies = availableMovies
+            .filter(m => !usedIds.includes(m.id))
+            .sort((a, b) => b.rating - a.rating);
+          
+          fallbackMovies = [...fallbackMovies, ...remainingMovies.slice(0, 3 - fallbackMovies.length)];
+        }
         aiRecommendation = {
           recommendations: fallbackMovies.map((movie, index) => ({
             title: movie.title,
