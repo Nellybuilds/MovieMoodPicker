@@ -538,11 +538,11 @@ CRITICAL: Only use exact movie titles from the list above. Return only valid JSO
         aiRecommendation = {
           recommendations: fallbackMovies.map((movie, index) => ({
             title: movie.title,
-            reasoning: `This ${movie.genre.toLowerCase()} movie perfectly matches your "${moodText}" mood with its ${movie.mood.toLowerCase()} atmosphere`,
+            reasoning: `This ${movie.genre.toLowerCase()} movie offers a ${movie.mood.toLowerCase()} atmosphere that fits what you're looking for`,
             confidence: 0.8 - (index * 0.1),
             rank: index + 1
           })),
-          moodAnalysis: `You're feeling ${moodText}. I've selected movies that should resonate with your current emotional state`,
+          moodAnalysis: `I've selected movies that match your mood and preferences`,
           watchContext: "Perfect timing for these mood-matching recommendations"
         };
       }
