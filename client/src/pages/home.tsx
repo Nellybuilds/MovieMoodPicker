@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MovieCard } from "@/components/movie-card";
 import { MoodInput } from "@/components/mood-input";
 import { Tutorial } from "@/components/tutorial";
+import { RecommendationSkeleton } from "@/components/recommendation-skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { getMoodBasedRecommendations, type MoodRecommendation } from "@/services/mood-recommendations";
@@ -107,8 +108,11 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Loading state */}
+            {isMoodLoading && <RecommendationSkeleton />}
+
             {/* Mood-based Recommendations */}
-            {moodRecommendations.length > 0 && (
+            {!isMoodLoading && moodRecommendations.length > 0 && (
               <div className="max-w-6xl mx-auto mb-12">
                 <h2 className="text-3xl font-display font-bold text-center mb-4 bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-transparent">
                   Perfect Movies for Your Mood
@@ -132,16 +136,40 @@ export default function Home() {
                         </span>
                       </div>
                       
-                      <img 
-                        src={rec.movie.image}
-                        alt={`${rec.movie.title} poster`}
-                        className="w-full h-48 object-cover rounded-lg mb-4 border border-purple-500/20"
-                        crossOrigin="anonymous"
-                        onError={(e) => {
-                          console.log(`Image failed to load for ${rec.movie.title}: ${rec.movie.image}`);
-                          (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450/6B21A8/FFC107?text=' + encodeURIComponent(rec.movie.title);
-                        }}
-                      />
+                      <div className="relative bg-gradient-to-br from-purple-900/30 to-gray-800/30 rounded-lg mb-4 border border-purple-500/20 h-48 overflow-hidden">
+                        <img 
+                          src={rec.movie.image}
+                          alt={`${rec.movie.title} poster`}
+                          className="w-full h-full object-cover transition-opacity duration-300"
+                          crossOrigin="anonymous"
+                          loading="lazy"
+                          onLoad={(e) => {
+                            (e.target as HTMLImageElement).style.opacity = '1';
+                          }}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.opacity = '0.8';
+                            target.src = `data:image/svg+xml,${encodeURIComponent(`
+                              <svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450">
+                                <defs>
+                                  <linearGradient id="grad${index}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.8" />
+                                    <stop offset="100%" style="stop-color:#1f2937;stop-opacity:0.9" />
+                                  </linearGradient>
+                                </defs>
+                                <rect width="300" height="450" fill="url(#grad${index})"/>
+                                <text x="150" y="210" text-anchor="middle" fill="white" font-size="18" font-weight="bold" font-family="Arial, sans-serif">
+                                  ${rec.movie.title.length > 15 ? rec.movie.title.substring(0, 15) + '...' : rec.movie.title}
+                                </text>
+                                <text x="150" y="240" text-anchor="middle" fill="#fbbf24" font-size="14" font-family="Arial, sans-serif">
+                                  ${rec.movie.genre} • ${rec.movie.mood}
+                                </text>
+                              </svg>
+                            `)}`;
+                          }}
+                          style={{ opacity: '0' }}
+                        />
+                      </div>
                       
                       <h3 className="text-xl font-display font-bold text-yellow-400 mb-2">{rec.movie.title}</h3>
                       <p className="text-purple-100 text-sm mb-3 leading-relaxed">{rec.reasoning}</p>

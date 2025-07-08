@@ -17,27 +17,40 @@ export function MovieCard({ movie, onPickAnother, aiInsight }: MovieCardProps) {
         <CardContent className="p-0">
           <div className="flex flex-col lg:flex-row">
             {/* Movie Poster */}
-            <div className="lg:w-1/3 relative">
+            <div className="lg:w-1/3 relative bg-gradient-to-br from-purple-900/30 to-gray-800/30">
               <img 
                 src={movie.image}
                 alt={`${movie.title} poster`}
-                className="w-full h-64 lg:h-full object-cover"
+                className="w-full h-64 lg:h-full object-cover transition-opacity duration-300"
                 crossOrigin="anonymous"
-                onError={(e) => {
-                  console.log(`Image failed to load for ${movie.title}: ${movie.image}`);
+                loading="lazy"
+                onLoad={(e) => {
                   const target = e.target as HTMLImageElement;
-                  // Try alternative TMDB image sizes
-                  if (target.src.includes('w500')) {
-                    target.src = target.src.replace('w500', 'w342');
-                  } else if (target.src.includes('w342')) {
-                    target.src = target.src.replace('w342', 'w185');
-                  } else if (target.src.includes('w185')) {
-                    target.src = target.src.replace('w185', 'original');
-                  } else {
-                    // Only use placeholder as final fallback
-                    target.src = `https://via.placeholder.com/400x600/1a1a1a/ffffff?text=${encodeURIComponent(movie.title)}`;
-                  }
+                  target.style.opacity = '1';
                 }}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.opacity = '0.7';
+                  // Create elegant fallback with movie title
+                  target.src = `data:image/svg+xml,${encodeURIComponent(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
+                      <defs>
+                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.8" />
+                          <stop offset="100%" style="stop-color:#1f2937;stop-opacity:0.9" />
+                        </linearGradient>
+                      </defs>
+                      <rect width="400" height="600" fill="url(#grad)"/>
+                      <text x="200" y="280" text-anchor="middle" fill="white" font-size="24" font-weight="bold" font-family="Arial, sans-serif">
+                        ${movie.title.length > 20 ? movie.title.substring(0, 20) + '...' : movie.title}
+                      </text>
+                      <text x="200" y="320" text-anchor="middle" fill="#fbbf24" font-size="16" font-family="Arial, sans-serif">
+                        ${movie.genre} • ${movie.mood}
+                      </text>
+                    </svg>
+                  `)}`;
+                }}
+                style={{ opacity: '0' }}
               />
             </div>
             

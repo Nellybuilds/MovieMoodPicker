@@ -107,7 +107,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
             {isLoading ? (
               <>
                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                Finding perfect movies...
+                <span className="animate-pulse">Analyzing your mood...</span>
               </>
             ) : (
               <>
