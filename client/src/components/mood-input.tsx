@@ -47,7 +47,7 @@ function getPersonalizedGreeting(): string {
   } else if (dayOfWeek === 6 || dayOfWeek === 0) { // Weekend
     timeContext = " Weekend mode activated! What kind of escape are you craving? 🌟";
   } else {
-    timeContext = " What's your heart telling you it needs tonight? 💫";
+    timeContext = " What kind of movie sounds good right now? 💫";
   }
   
   return greeting + timeContext;
