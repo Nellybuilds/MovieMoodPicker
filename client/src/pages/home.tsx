@@ -90,14 +90,18 @@ export default function Home() {
 
             {/* Kids Only Toggle */}
             <div className="max-w-4xl mx-auto mb-12">
-              <div id="kids-toggle" className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-900/20 to-yellow-900/20 rounded-xl border border-purple-500/30">
+              <div 
+                id="kids-toggle" 
+                className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-900/20 to-yellow-900/20 rounded-xl border border-purple-500/30 cursor-pointer hover:bg-gradient-to-r hover:from-purple-900/30 hover:to-yellow-900/30 transition-all duration-200"
+                onClick={() => setKidsOnly(!kidsOnly)}
+              >
                 <Checkbox
                   id="kids-only"
                   checked={kidsOnly}
                   onCheckedChange={(checked) => setKidsOnly(checked as boolean)}
-                  className="border-yellow-500 data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500"
+                  className="border-yellow-500 data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500 pointer-events-none"
                 />
-                <Label htmlFor="kids-only" className="text-yellow-100 font-medium cursor-pointer">
+                <Label htmlFor="kids-only" className="text-yellow-100 font-medium cursor-pointer pointer-events-none">
                   Show only family-friendly movies
                 </Label>
               </div>
