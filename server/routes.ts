@@ -404,48 +404,51 @@ Rank the movies 1-3 based on how well they match the user's mood and preferences
           isKidFriendly: movie.isKidFriendly
         }));
 
-      const prompt = `You are an expert movie recommendation AI. A user has described how they're feeling, and you need to recommend the TOP 3 movies from the available list that best match their emotional state and preferences.
+      const prompt = `You are an expert movie recommendation AI. Analyze the user's mood and recommend 3 movies that perfectly match their emotional state.
 
-User's Mood Description: "${moodText}"
-Kids Only Filter: ${kidsOnly ? 'Yes - only recommend family-friendly movies' : 'No restrictions'}
+USER'S MOOD: "${moodText}"
+FAMILY FILTER: ${kidsOnly ? 'Only family-friendly movies' : 'All movies allowed'}
 
-Available Movies:
-${topMovies.map(movie => `- ${movie.title} (${movie.year}) - Genre: ${movie.genre}, Mood: ${movie.mood}, Rating: ${movie.rating}/10, Kid-Friendly: ${movie.isKidFriendly ? 'Yes' : 'No'}
-  Description: ${movie.overview}`).join('\n\n')}
+AVAILABLE MOVIES:
+${topMovies.map(movie => `${movie.title} (${movie.year}) | Genre: ${movie.genre} | Mood: ${movie.mood} | Rating: ${movie.rating}/10 | Family: ${movie.isKidFriendly ? 'Yes' : 'No'}`).join('\n')}
 
-Analyze the user's mood description and recommend exactly 3 movies that best match their emotional state. Consider:
-1. The emotional tone of their description
-2. Specific keywords about mood, atmosphere, or feelings
-3. Any mentioned genres or preferences
-4. Whether they want something uplifting, cathartic, exciting, etc.
+MOOD ANALYSIS GUIDELINES:
+- If they say "nostalgic" or "cozy" → recommend Heartwarming/Feel-Good movies
+- If they say "sad" or "down" → recommend Uplifting/Inspirational movies  
+- If they say "excited" or "energetic" → recommend Action/Adventure movies
+- If they say "stressed" or "anxious" → recommend Chill/Relaxing movies
+- If they say "romantic" or "lovey" → recommend Romance movies
+- If they say "scared" or "thrills" → recommend Horror/Thriller movies
+- If they say "funny" or "laugh" → recommend Comedy movies
+- If they say "deep" or "think" → recommend Drama movies
 
-Respond with valid JSON in this exact format:
+RESPOND WITH VALID JSON ONLY:
 {
   "recommendations": [
     {
-      "title": "Exact Movie Title From List",
-      "reasoning": "Detailed explanation of why this movie perfectly matches their described mood and feelings",
+      "title": "Movie Title 1",
+      "reasoning": "Why this movie matches their mood perfectly",
       "confidence": 0.95,
       "rank": 1
     },
     {
-      "title": "Second Movie Title",
-      "reasoning": "Why this movie also aligns with their emotional state",
+      "title": "Movie Title 2", 
+      "reasoning": "How this movie fits their emotional state",
       "confidence": 0.85,
       "rank": 2
     },
     {
-      "title": "Third Movie Title",
-      "reasoning": "How this movie complements their mood description",
+      "title": "Movie Title 3",
+      "reasoning": "Why this movie complements their feelings",
       "confidence": 0.75,
       "rank": 3
     }
   ],
-  "moodAnalysis": "Brief analysis of the user's described emotional state",
-  "watchContext": "Perfect timing and context for these recommendations"
+  "moodAnalysis": "Brief analysis of their emotional state",
+  "watchContext": "Perfect timing context for these picks"
 }
 
-Only recommend movies from the provided list. Focus on emotional resonance with their mood description.`;
+CRITICAL: Only use exact movie titles from the list above. Return only valid JSON with no extra text.`;
 
       const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -475,23 +478,50 @@ Only recommend movies from the provided list. Focus on emotional resonance with 
       const aiData = await aiResponse.json();
       const aiContent = aiData.choices[0].message.content;
 
-      // Parse AI response
+      // Parse AI response with better error handling
       let aiRecommendation;
       try {
-        aiRecommendation = JSON.parse(aiContent);
+        // Clean the response - remove any markdown formatting
+        const cleanedContent = aiContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        aiRecommendation = JSON.parse(cleanedContent);
       } catch (parseError) {
         console.error('AI JSON parse error:', parseError);
-        // Fallback to top 3 movies
-        const fallbackMovies = availableMovies.slice(0, 3);
+        console.error('Raw AI response:', aiContent);
+        
+        // Smart fallback based on mood analysis
+        const moodLower = moodText.toLowerCase();
+        let selectedMovies = [];
+        
+        // Try to match mood to movies
+        if (moodLower.includes('nostalgic') || moodLower.includes('cozy') || moodLower.includes('heartwarming')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase().includes('heartwarming') || m.mood.toLowerCase().includes('feel-good'));
+        } else if (moodLower.includes('sad') || moodLower.includes('down') || moodLower.includes('upset')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase().includes('uplifting') || m.mood.toLowerCase().includes('inspirational'));
+        } else if (moodLower.includes('excited') || moodLower.includes('energetic') || moodLower.includes('action')) {
+          selectedMovies = availableMovies.filter(m => m.genre.toLowerCase().includes('action') || m.mood.toLowerCase().includes('thrilling'));
+        } else if (moodLower.includes('romantic') || moodLower.includes('love')) {
+          selectedMovies = availableMovies.filter(m => m.genre.toLowerCase().includes('romance') || m.mood.toLowerCase().includes('romantic'));
+        } else if (moodLower.includes('funny') || moodLower.includes('laugh') || moodLower.includes('comedy')) {
+          selectedMovies = availableMovies.filter(m => m.genre.toLowerCase().includes('comedy') || m.mood.toLowerCase().includes('funny'));
+        } else if (moodLower.includes('chill') || moodLower.includes('relaxing') || moodLower.includes('calm')) {
+          selectedMovies = availableMovies.filter(m => m.mood.toLowerCase().includes('chill') || m.mood.toLowerCase().includes('relaxing'));
+        }
+        
+        // If no specific matches, use top-rated movies
+        if (selectedMovies.length === 0) {
+          selectedMovies = availableMovies.sort((a, b) => b.rating - a.rating);
+        }
+        
+        const fallbackMovies = selectedMovies.slice(0, 3);
         aiRecommendation = {
           recommendations: fallbackMovies.map((movie, index) => ({
             title: movie.title,
-            reasoning: `This ${movie.genre.toLowerCase()} movie matches your described mood with its ${movie.mood.toLowerCase()} atmosphere`,
+            reasoning: `This ${movie.genre.toLowerCase()} movie perfectly matches your "${moodText}" mood with its ${movie.mood.toLowerCase()} atmosphere`,
             confidence: 0.8 - (index * 0.1),
             rank: index + 1
           })),
-          moodAnalysis: "Based on your description, I've selected movies that should resonate with your current feelings",
-          watchContext: "Perfect for your current emotional state"
+          moodAnalysis: `You're feeling ${moodText}. I've selected movies that should resonate with your current emotional state`,
+          watchContext: "Perfect timing for these mood-matching recommendations"
         };
       }
 
