@@ -92,7 +92,7 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
             value={moodText}
             onChange={(e) => setMoodText(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="I'm feeling nostalgic and want something cozy and heartwarming..."
+            placeholder="Example: I'm feeling nostalgic and want something cozy and heartwarming..."
             className="min-h-[100px] bg-purple-900/20 border-purple-500/40 text-purple-100 placeholder:text-purple-300 focus:border-yellow-400 focus:ring-yellow-400/20 resize-none"
             disabled={isLoading}
           />
@@ -109,8 +109,8 @@ export function MoodInput({ onMoodSubmit, isLoading }: MoodInputProps) {
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5 mr-2" />
-                Get AI Recommendations
+                🍿
+                Find My Perfect Match
               </>
             )}
           </Button>

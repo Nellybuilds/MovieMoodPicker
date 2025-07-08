@@ -69,21 +69,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Kids Only Toggle */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-900/20 to-yellow-900/20 rounded-xl border border-purple-500/30">
-            <Checkbox
-              id="kids-only"
-              checked={kidsOnly}
-              onCheckedChange={(checked) => setKidsOnly(checked as boolean)}
-              className="border-yellow-500 data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500"
-            />
-            <Label htmlFor="kids-only" className="text-yellow-100 font-medium cursor-pointer">
-              Show only family-friendly movies
-            </Label>
-          </div>
-        </div>
-
         {/* Main Content */}
         {selectedMovie ? (
           <div className="max-w-4xl mx-auto">
@@ -95,11 +80,26 @@ export default function Home() {
         ) : (
           <>
             {/* Mood Input */}
-            <div className="max-w-4xl mx-auto mb-12">
+            <div className="max-w-4xl mx-auto mb-8">
               <MoodInput 
                 onMoodSubmit={handleMoodSubmit}
                 isLoading={isMoodLoading}
               />
+            </div>
+
+            {/* Kids Only Toggle */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="flex items-center justify-center space-x-3 p-4 bg-gradient-to-r from-purple-900/20 to-yellow-900/20 rounded-xl border border-purple-500/30">
+                <Checkbox
+                  id="kids-only"
+                  checked={kidsOnly}
+                  onCheckedChange={(checked) => setKidsOnly(checked as boolean)}
+                  className="border-yellow-500 data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500"
+                />
+                <Label htmlFor="kids-only" className="text-yellow-100 font-medium cursor-pointer">
+                  Show only family-friendly movies
+                </Label>
+              </div>
             </div>
 
             {/* Mood-based Recommendations */}
